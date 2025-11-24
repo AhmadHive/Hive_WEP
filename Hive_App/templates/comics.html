@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .comics-page {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .comics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .comic-series-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        position: relative;
+    }
+
+    .comic-series-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .series-cover {
+        position: relative;
+        height: 350px;
+        overflow: hidden;
+    }
+
+    .series-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+
+    .series-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .comic-series-card:hover .series-overlay {
+        opacity: 1;
+    }
+
+    .comic-series-card:hover .series-cover img {
+        transform: scale(1.1);
+    }
+
+    .read-btn {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        padding: 1rem 2rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+        transform: translateY(20px);
+    }
+
+    .comic-series-card:hover .read-btn {
+        transform: translateY(0);
+    }
+
+    .read-btn:hover {
+        background: #ffcb05;
+        transform: scale(1.05);
+    }
+
+    .series-info {
+        padding: 1.5rem;
+    }
+
+    .series-info h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+    }
+
+    .series-description {
+        color: #666;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .series-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    .chapters-count {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .no-comics {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+    }
+
+    .no-comics i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #ddd;
+    }
+
+    .no-comics h3 {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--secondary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+        .comics-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .series-cover {
+            height: 300px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .comics-page {
+            padding: 5rem 1rem 2rem;
+        }
+
+        .comics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .series-cover {
+            height: 250px;
+        }
+
+        .series-info {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<section class="comics-page">
+    <h1 class="page-title">Our Comics</h1>
+    
+    <div class="comics-grid">
+        {% for series in series_list %}
+        <div class="comic-series-card">
+            <div class="series-cover">
+                <img src="{{ series.cover_image.url }}" alt="{{ series.title }}">
+                <div class="series-overlay">
+                    <a href="{% url 'comic_chapter' series.id 1 %}" class="read-btn">
+                        Start Reading
+                    </a>
+                </div>
+            </div>
+            <div class="series-info">
+                <h2>{{ series.title }}</h2>
+                <p class="series-description">{{ series.description }}</p>
+                <div class="series-meta">
+                    <span class="chapters-count">{{ series.chapters.count }} Chapters</span>
+                    <span class="latest-chapter">Latest: Chapter {{ series.chapters.last.chapter_number }}</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-comics">
+            <i class="fas fa-book-open"></i>
+            <h3>No Comics Available Yet</h3>
+            <p>We're working on creating amazing content for you. Check back soon!</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+    // تأثير التحميل للصور
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.series-cover img');
+        
+        images.forEach(img => {
+            // إضافة تأثير تحميل
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.5s ease';
+            
+            img.onload = function() {
+                this.style.opacity = '1';
+            };
+            
+            // إذا كانت الصورة محملة مسبقاً
+            if (img.complete) {
+                img.style.opacity = '1';
+            }
+        });
+
+        // تأثير التمرير السلس
+        const seriesCards = document.querySelectorAll('.comic-series-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        seriesCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+    });
+</script>
+{% endblock %}

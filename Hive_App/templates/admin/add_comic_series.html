@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .form-page {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+        background: #f8f9fa;
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: var(--primary-color);
+        color: white;
+        padding: 2rem;
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-subtitle {
+        opacity: 0.9;
+    }
+
+    .form-content {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .form-input, .form-textarea, .form-file {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-family: var(--font-family);
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-input:focus, .form-textarea:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 2px rgba(255, 203, 5, 0.2);
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-help {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #eee;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    .image-preview {
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .preview-image {
+        max-width: 300px;
+        max-height: 200px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+    }
+
+    .character-count {
+        text-align: right;
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-page {
+            padding: 5rem 1rem 2rem;
+        }
+
+        .form-content {
+            padding: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<section class="form-page">
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Add New Comic Series</h1>
+            <p class="form-subtitle">Create a new comic series for your community</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="form-content">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_title" class="form-label">Series Title *</label>
+                <input type="text" id="id_title" name="title" class="form-input" required 
+                       placeholder="Enter series title">
+                <div class="character-count">
+                    <span id="title-count">0</span>/100 characters
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_description" class="form-label">Description *</label>
+                <textarea id="id_description" name="description" class="form-textarea" required 
+                          placeholder="Describe the comic series..."></textarea>
+                <div class="character-count">
+                    <span id="description-count">0</span>/500 characters
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_cover_image" class="form-label">Cover Image *</label>
+                <input type="file" id="id_cover_image" name="cover_image" class="form-file" accept="image/*" required>
+                <div class="form-help">Recommended size: 400x600 pixels (3:2 ratio)</div>
+                <div class="image-preview" id="image-preview"></div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'comics_management' %}" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                </a>
+                <button type="submit" class="cta-button">
+                    <i class="fas fa-save"></i> Create Series
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    // عداد الأحرف
+    const titleInput = document.getElementById('id_title');
+    const descriptionTextarea = document.getElementById('id_description');
+    const titleCount = document.getElementById('title-count');
+    const descriptionCount = document.getElementById('description-count');
+
+    titleInput.addEventListener('input', function() {
+        titleCount.textContent = this.value.length;
+        if (this.value.length > 100) {
+            titleCount.style.color = '#dc3545';
+        } else {
+            titleCount.style.color = '#666';
+        }
+    });
+
+    descriptionTextarea.addEventListener('input', function() {
+        descriptionCount.textContent = this.value.length;
+        if (this.value.length > 500) {
+            descriptionCount.style.color = '#dc3545';
+        } else {
+            descriptionCount.style.color = '#666';
+        }
+    });
+
+    // معاينة الصورة
+    const imageInput = document.getElementById('id_cover_image');
+    const imagePreview = document.getElementById('image-preview');
+
+    imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.innerHTML = `<img src="${e.target.result}" class="preview-image" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.innerHTML = '';
+        }
+    });
+
+    // التحقق من النموذج قبل الإرسال
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const title = titleInput.value.trim();
+        const description = descriptionTextarea.value.trim();
+        
+        if (title.length === 0) {
+            e.preventDefault();
+            alert('Please enter a title for the comic series.');
+            titleInput.focus();
+            return;
+        }
+        
+        if (description.length === 0) {
+            e.preventDefault();
+            alert('Please enter a description for the comic series.');
+            descriptionTextarea.focus();
+            return;
+        }
+        
+        if (title.length > 100) {
+            e.preventDefault();
+            alert('Title must be 100 characters or less.');
+            titleInput.focus();
+            return;
+        }
+
+        if (description.length > 500) {
+            e.preventDefault();
+            alert('Description must be 500 characters or less.');
+            descriptionTextarea.focus();
+            return;
+        }
+    });
+</script>
+{% endblock %}

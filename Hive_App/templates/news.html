@@ -1,0 +1,286 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .news-page {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        color: var(--secondary-color);
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 أعمدة */
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .news-card-large {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        height: 100%; /* ارتفاع متساوي */
+    }
+
+    .news-card-large:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .news-image {
+        height: 200px; /* ارتفاع ثابت للصور */
+        overflow: hidden;
+        flex-shrink: 0; /* منع الصورة من التقلص */
+    }
+
+    .news-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* تغطية المساحة بدون تشويه */
+        transition: var(--transition);
+    }
+
+    .news-card-large:hover .news-image img {
+        transform: scale(1.05);
+    }
+
+    .news-content {
+        padding: 1.5rem;
+        flex-grow: 1; /* السماح للمحتوى بالنمو لملء المساحة */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .news-content h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+        color: var(--primary-color);
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* تقييد العنوان لسطرين */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .news-date {
+        color: #666;
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .news-excerpt {
+        color: #555;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        flex-grow: 1; /* السماح للنص بالنمو */
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* تقييد النص لـ3 أسطر */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .read-more-btn {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        text-align: center;
+        justify-content: center;
+        margin-top: auto; /* دفع الزر للأسفل */
+    }
+
+    .read-more-btn:hover {
+        background: #e6b800;
+        transform: translateX(-5px);
+    }
+
+    .no-news {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #666;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+    }
+
+    .no-news i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #ddd;
+    }
+
+    /* تحسينات للشاشات المتوسطة */
+    @media (max-width: 1024px) {
+        .news-grid {
+            grid-template-columns: repeat(2, 1fr); /* عمودين للشاشات المتوسطة */
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .news-grid {
+            grid-template-columns: 1fr; /* عمود واحد للهواتف */
+            gap: 1.5rem;
+        }
+
+        .news-content {
+            padding: 1.25rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .news-image {
+            height: 180px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .news-page {
+            padding: 5rem 1rem 2rem;
+        }
+
+        .news-image {
+            height: 160px;
+        }
+
+        .news-content h2 {
+            font-size: 1.1rem;
+        }
+
+        .read-more-btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* تأثيرات إضافية */
+    .news-card-large {
+        position: relative;
+    }
+
+    .news-card-large::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .news-card-large:hover::before {
+        transform: scaleX(1);
+    }
+
+    /* ترتيب متساوي للعناصر */
+    .news-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .news-category {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+    }
+</style>
+
+<section class="news-page">
+    <h1 class="page-title">Latest News</h1>
+    
+    <div class="news-grid">
+        {% for news_item in news_list %}
+        <div class="news-card-large">
+            <div class="news-image">
+                <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}">
+            </div>
+            <div class="news-content">
+                <div class="news-meta">
+                    <span class="news-date">
+                        <i class="far fa-calendar"></i>
+                        {{ news_item.publish_date|date:"M d, Y" }}
+                    </span>
+                    <span class="news-category">News</span>
+                </div>
+                <h2>{{ news_item.title }}</h2>
+                <p class="news-excerpt">{{ news_item.content|truncatewords:20 }}</p>
+                <a href="{% url 'news_detail' news_item.id %}" class="read-more-btn">
+                    Read More <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-news">
+            <i class="far fa-newspaper"></i>
+            <h3>No News Available</h3>
+            <p>Check back later for the latest updates from Hive.</p>
+            {% if user.is_superuser %}
+            <a href="{% url 'add_news' %}" class="cta-button" style="margin-top: 1rem;">
+                <i class="fas fa-plus"></i> Add First News
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+    // تأثيرات التحميل للبطاقات
+    document.addEventListener('DOMContentLoaded', function() {
+        const newsCards = document.querySelectorAll('.news-card-large');
+        
+        newsCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+
+        // تأثيرات hover إضافية
+        newsCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.zIndex = '10';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.zIndex = '1';
+            });
+        });
+    });
+</script>
+{% endblock %}

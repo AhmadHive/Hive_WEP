@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .comic-reader {
+        margin-top: 70px;
+        background: #000;
+    }
+
+    .reader-header {
+        background: var(--primary-color);
+        color: var(--text-light);
+        padding: 1rem 5%;
+        position: sticky;
+        top: 70px;
+        z-index: 100;
+        border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .reader-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .back-to-comics {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+    }
+
+    .back-to-comics:hover {
+        color: var(--secondary-color);
+    }
+
+    .chapter-info {
+        text-align: center;
+        flex-grow: 1;
+    }
+
+    .chapter-info h1 {
+        font-size: 1.3rem;
+        color: var(--secondary-color);
+        margin-bottom: 0.25rem;
+    }
+
+    .chapter-info h2 {
+        font-size: 1rem;
+        font-weight: 400;
+        opacity: 0.9;
+    }
+
+    .chapter-nav {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .nav-btn {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid transparent;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+    }
+
+    .nav-btn:hover {
+        color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    .reader-content {
+        background: #000;
+        min-height: calc(100vh - 140px);
+    }
+
+    .comic-pages {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    .comic-page {
+        margin-bottom: 0;
+        position: relative;
+    }
+
+    .page-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .page-number {
+        text-align: center;
+        color: var(--text-light);
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        font-size: 0.9rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .reader-footer {
+        background: var(--primary-color);
+        color: var(--text-light);
+        padding: 2rem 5%;
+    }
+
+    .chapter-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .chapter-controls .cta-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        position: fixed;
+        top: 70px;
+        left: 0;
+        z-index: 101;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--secondary-color);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .reading-progress {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        z-index: 100;
+    }
+
+    /* حماية الصور */
+    .comic-page {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+
+    .page-image {
+        pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+        .reader-navigation {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .chapter-nav {
+            order: -1;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .chapter-controls {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chapter-info h1 {
+            font-size: 1.1rem;
+        }
+
+        .chapter-info h2 {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .reader-header {
+            padding: 1rem;
+        }
+
+        .reader-footer {
+            padding: 1.5rem 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .chapter-controls .cta-button {
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem;
+        }
+    }
+</style>
+
+<!-- شريط التقدم -->
+<div class="progress-bar">
+    <div class="progress-fill" id="reading-progress"></div>
+</div>
+
+<section class="comic-reader">
+    <div class="reader-header">
+        <div class="reader-navigation">
+            <a href="{% url 'comics' %}" class="back-to-comics">
+                <i class="fas fa-arrow-left"></i> All Comics
+            </a>
+            <div class="chapter-info">
+                <h1>{{ series.title }}</h1>
+                <h2>Chapter {{ chapter.chapter_number }}: {{ chapter.title }}</h2>
+            </div>
+            <div class="chapter-nav">
+                {% if chapter.chapter_number > 1 %}
+                <a href="{% url 'comic_chapter' series.id chapter.chapter_number|add:'-1' %}" class="nav-btn prev-chapter">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+                {% endif %}
+                
+                {% if chapter.chapter_number < series.chapters.count %}
+                <a href="{% url 'comic_chapter' series.id chapter.chapter_number|add:'1' %}" class="nav-btn next-chapter">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="reader-content">
+        <div class="comic-pages">
+            {% for page in pages %}
+            <div class="comic-page" id="page-{{ page.page_number }}">
+                <img src="{{ page.image.url }}" alt="Page {{ page.page_number }}" class="page-image">
+                <div class="page-number">Page {{ page.page_number }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="reader-footer">
+        <div class="chapter-controls">
+            {% if chapter.chapter_number > 1 %}
+            <a href="{% url 'comic_chapter' series.id chapter.chapter_number|add:'-1' %}" class="cta-button">
+                <i class="fas fa-chevron-left"></i> Previous Chapter
+            </a>
+            {% endif %}
+            
+            <a href="{% url 'comics' %}" class="cta-button secondary">All Comics</a>
+            
+            {% if chapter.chapter_number < series.chapters.count %}
+            <a href="{% url 'comic_chapter' series.id chapter.chapter_number|add:'1' %}" class="cta-button">
+                Next Chapter <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<div class="reading-progress" id="progress-text">0%</div>
+
+<script>
+    // تتبع تقدم القراءة
+    let readingProgress = 0;
+    const comicReader = document.querySelector('.comic-reader');
+    const progressFill = document.getElementById('reading-progress');
+    const progressText = document.getElementById('progress-text');
+    
+    function updateReadingProgress() {
+        const scrollTop = window.pageYOffset;
+        const readerTop = comicReader.offsetTop;
+        const readerHeight = comicReader.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        if (scrollTop >= readerTop) {
+            const progress = ((scrollTop - readerTop) / (readerHeight - windowHeight)) * 100;
+            readingProgress = Math.min(100, Math.max(0, progress));
+            
+            progressFill.style.width = readingProgress + '%';
+            progressText.textContent = Math.round(readingProgress) + '%';
+            
+            // حفظ التقدم في localStorage
+            const chapterId = window.location.pathname;
+            localStorage.setItem(`readingProgress_${chapterId}`, readingProgress);
+        }
+    }
+
+    // استعادة التقدم المحفوظ
+    const chapterId = window.location.pathname;
+    const savedProgress = localStorage.getItem(`readingProgress_${chapterId}`);
+    if (savedProgress) {
+        setTimeout(() => {
+            const targetScroll = comicReader.offsetTop + (comicReader.offsetHeight * savedProgress / 100);
+            window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        }, 1000);
+    }
+
+    window.addEventListener('scroll', updateReadingProgress);
+    window.addEventListener('resize', updateReadingProgress);
+
+    // التنقل بين الصفحات باستخدام مفاتيح الأسهم
+    document.addEventListener('keydown', function(e) {
+        {% if chapter.chapter_number > 1 %}
+        if (e.key === 'ArrowLeft') {
+            window.location.href = "{% url 'comic_chapter' series.id chapter.chapter_number|add:'-1' %}";
+        }
+        {% endif %}
+        
+        {% if chapter.chapter_number < series.chapters.count %}
+        if (e.key === 'ArrowRight') {
+            window.location.href = "{% url 'comic_chapter' series.id chapter.chapter_number|add:'1' %}";
+        }
+        {% endif %}
+    });
+
+    // حماية الصور من التحميل غير المصرح به
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.classList.contains('page-image')) {
+            e.preventDefault();
+        }
+    });
+
+    document.addEventListener('dragstart', function(e) {
+        if (e.target.classList.contains('page-image')) {
+            e.preventDefault();
+        }
+    });
+
+    // تحميل الصور بكسل
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.page-image');
+        
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.getAttribute('src');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => {
+            imageObserver.observe(img);
+        });
+    });
+</script>
+{% endblock %}

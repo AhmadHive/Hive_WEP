@@ -1,0 +1,764 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .admin-panel {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+        background: #f8f9fa;
+    }
+
+    .admin-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .admin-title {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .admin-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        border-left: 4px solid var(--secondary-color);
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-0.25rem);
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
+
+    /* أنماط الإحصائيات المحسنة */
+    .stat-change {
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+    }
+
+    .stat-change.positive {
+        color: #28a745;
+    }
+
+    .stat-change.negative {
+        color: #dc3545;
+    }
+
+    .stat-subtext {
+        font-size: 0.75rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+
+    .stat-icon {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 3rem;
+        height: 3rem;
+        background: rgba(255, 203, 5, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--secondary-color);
+    }
+
+    .today-stats {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+    }
+
+    .today-stats h3 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .admin-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .action-card {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--secondary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: var(--text-dark);
+    }
+
+    .action-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .action-card p {
+        color: #666;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+    }
+
+    .charts-section {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+    }
+
+    .charts-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .chart-title {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+    }
+
+    .period-selector {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .period-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        background: white;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.9rem;
+    }
+
+    .period-btn.active {
+        background: var(--secondary-color);
+        border-color: var(--secondary-color);
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .period-btn:hover:not(.active) {
+        background: #f8f9fa;
+    }
+
+    .chart-container {
+        height: 300px;
+        position: relative;
+    }
+
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .quick-stat {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        text-align: center;
+        border-left: 3px solid var(--secondary-color);
+    }
+
+    .quick-stat .number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: block;
+    }
+
+    .quick-stat .label {
+        font-size: 0.8rem;
+        color: #666;
+        text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+        .admin-panel {
+            padding: 5rem 1rem 2rem;
+        }
+
+        .admin-title {
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .admin-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .charts-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .period-selector {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .today-stats {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stat-card {
+            padding: 1.5rem;
+        }
+
+        .action-card {
+            padding: 1.5rem;
+        }
+
+        .charts-section {
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .period-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+    }
+</style>
+<div class="action-card">
+    <div class="action-icon">
+        <i class="fas fa-file-export"></i>
+    </div>
+    <h3>Export Members Data</h3>
+    <p>Download all members information to Excel spreadsheet</p>
+    <a href="{% url 'export_users' %}" class="cta-button export-btn">
+        <i class="fas fa-download"></i> Export to Excel
+    </a>
+</div>
+
+<section class="admin-panel">
+    <div class="admin-header">
+        <h1 class="admin-title">Admin Control Panel</h1>
+        <p class="admin-subtitle">Manage your Hive community content and track performance</p>
+    </div>
+
+    <!-- في قسم stats-grid بعد البطاقات الحالية -->
+<div class="stat-card">
+    <div class="stat-number">{{ total_entrepreneurs }}</div>
+    <div class="stat-label">Total Entrepreneurs</div>
+    <div class="stat-subtext">Business Owners</div>
+</div>
+<div class="stat-card">
+    <div class="stat-number">{{ total_blogs }}</div>
+    <div class="stat-label">Total Blogs</div>
+    <div class="stat-subtext">Published Articles</div>
+</div>
+
+    <!-- إحصائيات سريعة -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_users }}</div>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-change {% if users_change > 0 %}positive{% else %}negative{% endif %}">
+                <i class="fas fa-arrow-{% if users_change > 0 %}up{% else %}down{% endif %}"></i>
+                {{ users_change }}% Today
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_news }}</div>
+            <div class="stat-label">Total News</div>
+            <div class="stat-change {% if news_change > 0 %}positive{% else %}negative{% endif %}">
+                <i class="fas fa-arrow-{% if news_change > 0 %}up{% else %}down{% endif %}"></i>
+                {{ news_change }}% Today
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_comics }}</div>
+            <div class="stat-label">Total Comics</div>
+            <div class="stat-change {% if comics_change > 0 %}positive{% else %}negative{% endif %}">
+                <i class="fas fa-arrow-{% if comics_change > 0 %}up{% else %}down{% endif %}"></i>
+                {{ comics_change }}% Today
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ total_series }}</div>
+            <div class="stat-label">Total Series</div>
+            <div class="stat-subtext">Comic Series</div>
+        </div>
+    </div>
+
+    <!-- إحصائيات اليوم -->
+    <div class="today-stats">
+        <h3>Today's Activity (Last 24 Hours)</h3>
+        <div class="stats-grid">
+            <div class="stat-card today-stat">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number">{{ users_today }}</div>
+                <div class="stat-label">New Users</div>
+                <div class="stat-subtext">Yesterday: {{ users_yesterday }}</div>
+            </div>
+            <div class="stat-card today-stat">
+                <div class="stat-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="stat-number">{{ news_today }}</div>
+                <div class="stat-label">News Published</div>
+                <div class="stat-subtext">Yesterday: {{ news_yesterday }}</div>
+            </div>
+            <div class="stat-card today-stat">
+                <div class="stat-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="stat-number">{{ comics_today }}</div>
+                <div class="stat-label">Comics Added</div>
+                <div class="stat-subtext">Yesterday: {{ comics_yesterday }}</div>
+            </div>
+            <div class="stat-card today-stat">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-number">{{ users_today|add:news_today|add:comics_today }}</div>
+                <div class="stat-label">Total Activities</div>
+                <div class="stat-subtext">Combined today</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- إجراءات سريعة -->
+     
+    <div class="admin-actions">
+        <div class="action-card">
+            
+            <div class="action-icon">
+                <i class="fas fa-newspaper"></i>
+            </div>
+            <h3>Manage News</h3>
+            <p>Create, edit, and publish news articles for your community</p>
+            <a href="{% url 'news_management' %}" class="cta-button">Manage News</a>
+        </div>
+
+        <div class="action-card">
+            <div class="action-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h3>Manage Comics</h3>
+            <p>Upload and organize comic series, chapters, and pages</p>
+            <a href="{% url 'comics_management' %}" class="cta-button">Manage Comics</a>
+        </div>
+        <!-- في قسم admin-actions بعد البطاقات الحالية -->
+  <div class="action-card">
+    <div class="action-icon">
+        <i class="fas fa-user-tie"></i>
+    </div>
+    <h3>Manage Entrepreneurs</h3>
+    <p>Add and manage business entrepreneurs and their profiles</p>
+    <a href="{% url 'entrepreneurs_management' %}" class="cta-button">Manage Entrepreneurs</a>
+  </div>
+
+  <div class="action-card">
+    <div class="action-icon">
+        <i class="fas fa-blog"></i>
+    </div>
+    <h3>Manage Blogs</h3>
+    <p>Create and publish blog articles from entrepreneurs</p>
+    <a href="{% url 'blogs_management' %}" class="cta-button">Manage Blogs</a>
+</div>
+
+        <div class="action-card">
+            <div class="action-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3>View Analytics</h3>
+            <p>Track community growth and content performance</p>
+            <a href="#analytics" class="cta-button">View Analytics</a>
+        </div>
+    </div>
+
+    <!-- الرسوم البيانية -->
+    <div class="charts-section" id="analytics">
+        <div class="charts-header">
+            <h2 class="chart-title">Community Growth Analytics</h2>
+            <div class="period-selector">
+                <button class="period-btn" data-period="today">Today</button>
+                <button class="period-btn active" data-period="week">Week</button>
+                <button class="period-btn" data-period="month">Month</button>
+                <button class="period-btn" data-period="year">Year</button>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="growthChart"></canvas>
+        </div>
+
+        <!-- إحصائيات سريعة -->
+        <div class="quick-stats">
+            <div class="quick-stat">
+                <span class="number">{{ users_week }}</span>
+                <span class="label">Users This Week</span>
+            </div>
+            <div class="quick-stat">
+                <span class="number">{{ news_week }}</span>
+                <span class="label">News This Week</span>
+            </div>
+            <div class="quick-stat">
+                <span class="number">{{ comics_week }}</span>
+                <span class="label">Comics This Week</span>
+            </div>
+            <div class="quick-stat">
+                <span class="number">{{ users_month }}</span>
+                <span class="label">Users This Month</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let growthChart;
+    let currentPeriod = 'week';
+
+    // دالة لجلب البيانات من API
+    async function fetchChartData(period) {
+        try {
+            const response = await fetch(`/admin/stats-api/?period=${period}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log('Fetched data:', data); // للتصحيح
+            return data;
+        } catch (error) {
+            console.error('Error fetching chart data:', error);
+            // بيانات افتراضية للاختبار
+            return getSampleData(period);
+        }
+    }
+
+    // بيانات افتراضية للاختبار
+    function getSampleData(period) {
+        const today = new Date();
+        let labels = [];
+        let userData = [];
+        let newsData = [];
+        let comicData = [];
+        let type = 'daily';
+
+        if (period === 'today') {
+            type = 'hourly';
+            for (let i = 0; i < 24; i++) {
+                labels.push(`${i}:00`);
+                userData.push(Math.floor(Math.random() * 5));
+                newsData.push(Math.floor(Math.random() * 3));
+                comicData.push(Math.floor(Math.random() * 2));
+            }
+        } else {
+            const days = period === 'week' ? 7 : period === 'month' ? 30 : 365;
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                }));
+                userData.push(Math.floor(Math.random() * 10));
+                newsData.push(Math.floor(Math.random() * 5));
+                comicData.push(Math.floor(Math.random() * 3));
+            }
+        }
+
+        return {
+            type: type,
+            users: userData.map((count, index) => ({ count: count })),
+            news: newsData.map((count, index) => ({ count: count })),
+            comics: comicData.map((count, index) => ({ count: count }))
+        };
+    }
+
+    // دالة لتحديث الرسم البياني
+    async function updateChart(period) {
+        console.log('Updating chart for period:', period); // للتصحيح
+        
+        const chartData = await fetchChartData(period);
+        if (!chartData) {
+            console.error('No chart data received');
+            return;
+        }
+
+        let labels, userData, newsData, comicData;
+
+        if (chartData.type === 'hourly') {
+            // بيانات كل ساعة
+            labels = chartData.users.map((item, index) => {
+                return `${index}:00`;
+            });
+            userData = chartData.users.map(item => item.count || 0);
+            newsData = chartData.news.map(item => item.count || 0);
+            comicData = chartData.comics.map(item => item.count || 0);
+        } else {
+            // بيانات كل يوم
+            labels = chartData.users.map((item, index) => {
+                const date = new Date();
+                date.setDate(date.getDate() - (chartData.users.length - 1 - index));
+                return date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            });
+            userData = chartData.users.map(item => item.count || 0);
+            newsData = chartData.news.map(item => item.count || 0);
+            comicData = chartData.comics.map(item => item.count || 0);
+        }
+
+        console.log('Chart data:', { labels, userData, newsData, comicData }); // للتصحيح
+
+        // تحديث أو إنشاء الرسم البياني
+        if (growthChart) {
+            growthChart.data.labels = labels;
+            growthChart.data.datasets[0].data = userData;
+            growthChart.data.datasets[1].data = newsData;
+            growthChart.data.datasets[2].data = comicData;
+            growthChart.update();
+        } else {
+            initializeChart(labels, userData, newsData, comicData);
+        }
+    }
+
+    // دالة لتهيئة الرسم البياني
+    function initializeChart(labels, userData, newsData, comicData) {
+        const ctx = document.getElementById('growthChart');
+        if (!ctx) {
+            console.error('Canvas element not found');
+            return;
+        }
+
+        growthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'New Users',
+                        data: userData,
+                        borderColor: '#ffcb05',
+                        backgroundColor: 'rgba(255, 203, 5, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ffcb05',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'News Published',
+                        data: newsData,
+                        borderColor: '#032752',
+                        backgroundColor: 'rgba(3, 39, 82, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#032752',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Comics Added',
+                        data: comicData,
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#28a745',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 13 },
+                        padding: 12
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false,
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    }
+
+    // تبديل الفترات الزمنية
+    document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // إزالة النشاط من جميع الأزرار
+            document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+            // إضافة النشاط للزر المختار
+            this.classList.add('active');
+            
+            const period = this.dataset.period;
+            currentPeriod = period;
+            updateChart(period);
+        });
+    });
+
+    // تحميل البيانات الأولية
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing chart...');
+        setTimeout(() => {
+            updateChart(currentPeriod);
+        }, 1000);
+        
+        // تحديث البيانات كل دقيقتين (للتقليل من الحمل)
+        setInterval(() => {
+            updateChart(currentPeriod);
+        }, 120000);
+    });
+
+    // إضافة زر تصحيح للتحقق من البيانات
+    const debugBtn = document.createElement('button');
+    debugBtn.textContent = 'Debug Chart';
+    debugBtn.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+    `;
+    debugBtn.addEventListener('click', () => {
+        console.log('Current period:', currentPeriod);
+        console.log('Chart instance:', growthChart);
+        updateChart(currentPeriod);
+    });
+    document.body.appendChild(debugBtn);
+</script>
+{% endblock %}

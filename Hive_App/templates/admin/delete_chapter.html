@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="delete-page">
+    <div class="delete-container">
+        <div class="delete-header">
+            <h1 class="delete-title">Delete Chapter</h1>
+        </div>
+        <div class="delete-content">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Confirm Deletion</h2>
+            <p>Delete chapter <strong>{{ chapter.chapter_number }}: {{ chapter.title }}</strong>?</p>
+            <p>All pages in this chapter will also be deleted.</p>
+            <div class="delete-actions">
+                <a href="{% url 'chapter_management' chapter.series.id %}" class="btn-secondary">Cancel</a>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

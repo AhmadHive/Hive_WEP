@@ -1,0 +1,689 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .register-page {
+        padding: 6rem 5% 3rem;
+        background: linear-gradient(135deg, var(--background-dark) 0%, #021c3a 100%);
+        min-height: 100vh;
+    }
+
+    .register-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .register-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: var(--text-light);
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .register-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .register-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    .register-form-container {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 3rem;
+        box-shadow: var(--shadow);
+    }
+
+    .register-form {
+        width: 100%;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .form-section:last-of-type {
+        border-bottom: none;
+    }
+
+    .form-section-title {
+        font-size: 1.25rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--secondary-color);
+        display: inline-block;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+    }
+
+    .register-form input {
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-family: var(--font-family);
+        font-size: 1rem;
+        background: #fafafa;
+        transition: var(--transition);
+    }
+
+    .register-form input:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        background: white;
+        box-shadow: 0 0 0 2px rgba(255, 203, 5, 0.2);
+    }
+
+    .form-errors {
+        background: #fee;
+        border: 1px solid #f5c6cb;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .error-alert {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #721c24;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .field-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin: 0.25rem 0;
+        padding-right: 1rem;
+    }
+
+    .form-agreement {
+        margin: 2rem 0;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .checkbox-label input {
+        display: none;
+    }
+
+    .checkmark {
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 2px solid #ddd;
+        border-radius: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: var(--transition);
+        margin-top: 0.125rem;
+    }
+
+    .checkbox-label input:checked + .checkmark {
+        background: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    .checkbox-label input:checked + .checkmark::after {
+        content: '✓';
+        color: var(--text-dark);
+        font-weight: bold;
+        font-size: 0.875rem;
+    }
+
+    .register-btn {
+        width: 100%;
+        padding: 1.2rem;
+        font-size: 1.1rem;
+        margin: 2rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .login-redirect {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
+
+    .register-benefits {
+        position: sticky;
+        top: 6rem;
+    }
+
+    .benefits-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        color: var(--text-light);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .benefits-card h3 {
+        color: var(--secondary-color);
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .benefits-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .benefit-item {
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+
+    .benefit-icon {
+        width: 3rem;
+        height: 3rem;
+        background: var(--secondary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: var(--text-dark);
+        font-size: 1.25rem;
+    }
+
+    .benefit-content h4 {
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .benefit-content p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .password-input-wrapper {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+        transition: var(--transition);
+    }
+
+    .password-toggle:hover {
+        color: var(--secondary-color);
+        background: rgba(255, 203, 5, 0.1);
+    }
+
+    .password-strength {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .register-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .register-form-container {
+            padding: 2rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .register-benefits {
+            position: static;
+        }
+
+        .benefits-card {
+            padding: 2rem;
+        }
+
+        .benefit-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .benefit-icon {
+            align-self: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .register-form-container {
+            padding: 1.5rem;
+        }
+
+        .form-section {
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .benefits-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<section class="register-page">
+    <div class="register-container">
+        <div class="register-header">
+            <h1 class="page-title">Join Hive Community</h1>
+            <p class="register-subtitle">Become part of the next generation of entrepreneurs</p>
+        </div>
+        
+        <div class="register-content">
+            <div class="register-form-container">
+                <form method="post" class="register-form" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                    <div class="form-errors">
+                        <div class="error-alert">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Please correct the errors below</span>
+                        </div>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                            <div class="field-error">
+                                <strong>{{ field.label }}:</strong> {{ error }}
+                            </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <div class="field-error">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="form-section">
+                        <h3 class="form-section-title">Account Information</h3>
+                        
+                        <!-- Email بدلاً من Username -->
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="id_email" class="form-label">Email Address *</label>
+                                <input type="email" id="id_email" name="email" required 
+                                       placeholder="your.email@university.edu"
+                                       value="{{ form.email.value|default:'' }}"
+                                       class="{% if form.email.errors %}error-field{% endif %}">
+                                {% if form.email.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.email.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_password1" class="form-label">Password *</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="id_password1" name="password1" required 
+                                           placeholder="Minimum 8 characters"
+                                           value="{{ form.password1.value|default:'' }}"
+                                           class="{% if form.password1.errors %}error-field{% endif %}">
+                                    <button type="button" class="password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength" id="password-strength"></div>
+                                {% if form.password1.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.password1.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_password2" class="form-label">Confirm Password *</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="id_password2" name="password2" required 
+                                           placeholder="Re-enter your password"
+                                           value="{{ form.password2.value|default:'' }}"
+                                           class="{% if form.password2.errors %}error-field{% endif %}">
+                                    <button type="button" class="password-toggle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password2.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.password2.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3 class="form-section-title">Personal Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_full_name" class="form-label">Full Name *</label>
+                                <input type="text" id="id_full_name" name="full_name" required 
+                                       placeholder="Your full name"
+                                       value="{{ form.full_name.value|default:'' }}"
+                                       class="{% if form.full_name.errors %}error-field{% endif %}">
+                                {% if form.full_name.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.full_name.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_age" class="form-label">Age *</label>
+                                <input type="number" id="id_age" name="age" required min="16" max="60"
+                                       placeholder="Your age"
+                                       value="{{ form.age.value|default:'' }}"
+                                       class="{% if form.age.errors %}error-field{% endif %}">
+                                {% if form.age.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.age.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_university" class="form-label">University *</label>
+                                <input type="text" id="id_university" name="university" required 
+                                       placeholder="Your university"
+                                       value="{{ form.university.value|default:'' }}"
+                                       class="{% if form.university.errors %}error-field{% endif %}">
+                                {% if form.university.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.university.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_college" class="form-label">College *</label>
+                                <input type="text" id="id_college" name="college" required 
+                                       placeholder="Your college"
+                                       value="{{ form.college.value|default:'' }}"
+                                       class="{% if form.college.errors %}error-field{% endif %}">
+                                {% if form.college.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.college.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_major" class="form-label">Major/Specialization *</label>
+                                <input type="text" id="id_major" name="major" required 
+                                       placeholder="Your major"
+                                       value="{{ form.major.value|default:'' }}"
+                                       class="{% if form.major.errors %}error-field{% endif %}">
+                                {% if form.major.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.major.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_phone_number" class="form-label">Phone Number *</label>
+                                <input type="tel" id="id_phone_number" name="phone_number" required 
+                                       placeholder="Your phone number"
+                                       value="{{ form.phone_number.value|default:'' }}"
+                                       class="{% if form.phone_number.errors %}error-field{% endif %}">
+                                {% if form.phone_number.errors %}
+                                <div class="field-errors">
+                                    {% for error in form.phone_number.errors %}
+                                    <span class="error-text">{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <button type="submit" class="cta-button register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </button>
+                    
+                    <div class="login-redirect">
+                        <p>Already have an account? <a href="{% url 'login' %}" class="link">Sign in here</a></p>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="register-benefits">
+                <div class="benefits-card">
+                    <h3>Why Join Hive?</h3>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h4>Connect with Peers</h4>
+                                <p>Join a community of like-minded students and entrepreneurs</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h4>Skill Development</h4>
+                                <p>Access workshops, training, and hands-on learning opportunities</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h4>Career Opportunities</h4>
+                                <p>Get access to internships, competitions, and mentorship programs</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="benefit-content">
+                                <h4>Real-world Experience</h4>
+                                <p>Bridge the gap between academic theory and practical application</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // إظهار/إخفاء كلمة المرور
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+                this.setAttribute('aria-label', 'Hide password');
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+                this.setAttribute('aria-label', 'Show password');
+            }
+        });
+    });
+
+    // التحقق من تطابق كلمات المرور
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+    const strengthIndicator = document.getElementById('password-strength');
+
+    function validatePasswords() {
+        if (password1.value !== password2.value) {
+            password2.setCustomValidity('Passwords do not match');
+        } else {
+            password2.setCustomValidity('');
+        }
+    }
+
+    function calculatePasswordStrength(password) {
+        let score = 0;
+        if (!password) return {score: 0, text: ''};
+        
+        // طول كلمة المرور
+        if (password.length >= 8) score += 1;
+        if (password.length >= 12) score += 1;
+        
+        // تنوع الأحرف
+        if (/[a-z]/.test(password)) score += 1;
+        if (/[A-Z]/.test(password)) score += 1;
+        if (/[0-9]/.test(password)) score += 1;
+        if (/[^a-zA-Z0-9]/.test(password)) score += 1;
+        
+        const levels = [
+            {text: 'Very Weak', color: '#e74c3c'},
+            {text: 'Weak', color: '#e67e22'},
+            {text: 'Fair', color: '#f1c40f'},
+            {text: 'Good', color: '#2ecc71'},
+            {text: 'Strong', color: '#27ae60'},
+            {text: 'Very Strong', color: '#229954'}
+        ];
+        
+        return levels[Math.min(score, 5)];
+    }
+
+    function updatePasswordStrength() {
+        const strength = calculatePasswordStrength(password1.value);
+        strengthIndicator.textContent = `Strength: ${strength.text}`;
+        strengthIndicator.style.color = strength.color;
+    }
+
+    if (password1 && password2) {
+        password1.addEventListener('input', validatePasswords);
+        password2.addEventListener('input', validatePasswords);
+        password1.addEventListener('input', updatePasswordStrength);
+    }
+
+    // مؤشر التحميل عند الإرسال
+    const registerForm = document.querySelector('.register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function() {
+            const submitBtn = this.querySelector('.register-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            }
+        });
+    }
+
+    // إضافة CSS للأخطاء
+    const errorStyle = document.createElement('style');
+    errorStyle.textContent = `
+        .error-field {
+            border: 2px solid #dc3545 !important;
+            background-color: #fff8f8;
+        }
+        .field-errors {
+            margin-top: 0.5rem;
+        }
+        .error-text {
+            color: #dc3545;
+            font-size: 0.8rem;
+            display: block;
+        }
+    `;
+    document.head.appendChild(errorStyle);
+</script>
+{% endblock %}

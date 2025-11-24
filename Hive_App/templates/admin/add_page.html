@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Add Page to Chapter {{ chapter.chapter_number }}</h1>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="form-content">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Page Number</label>
+                <input type="number" name="page_number" class="form-input" value="{{ form.page_number.value }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Image</label>
+                <input type="file" name="image" class="form-file" accept="image/*" required>
+            </div>
+            <div class="form-actions">
+                <a href="{% url 'page_management' chapter.id %}" class="btn-secondary">Cancel</a>
+                <button type="submit" class="cta-button">Add Page</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

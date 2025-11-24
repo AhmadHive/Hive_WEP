@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .no-pages-page {
+        padding: 8rem 5% 4rem;
+        text-align: center;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+    }
+    
+    .no-pages-content {
+        max-width: 600px;
+        background: white;
+        padding: 3rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+    }
+    
+    .no-pages-icon {
+        font-size: 4rem;
+        color: var(--secondary-color);
+        margin-bottom: 2rem;
+    }
+    
+    .no-pages-title {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .no-pages-message {
+        color: #666;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+    
+    .chapter-info {
+        background: var(--background-dark);
+        color: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+    }
+    
+    .chapter-info h3 {
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<section class="no-pages-page">
+    <div class="no-pages-content">
+        <div class="no-pages-icon">
+            <i class="fas fa-images"></i>
+        </div>
+        
+        <div class="chapter-info">
+            <h3>{{ chapter.series.title }}</h3>
+            <p>الفصل {{ chapter.chapter_number }}: {{ chapter.title }}</p>
+            {% if chapter.description %}
+            <p>{{ chapter.description }}</p>
+            {% endif %}
+        </div>
+        
+        <h1 class="no-pages-title">لا توجد صفحات بعد</h1>
+        
+        <p class="no-pages-message">
+            هذا الفصل لا يحتوي على أي صفحات منشورة بعد.
+            {% if user.is_superuser %}
+            <br><br>
+            <strong>بصفتك مسؤولاً، يمكنك إضافة صفحات لهذا الفصل.</strong>
+            {% else %}
+            <br><br>
+            يرجى العودة لاحقاً لمشاهدة الصفحات عندما يتم نشرها.
+            {% endif %}
+        </p>
+        
+        <div class="action-buttons">
+            <a href="{% url 'chapter_management' chapter.series.id %}" class="cta-button">
+                <i class="fas fa-arrow-left"></i> العودة للفصول
+            </a>
+            
+            <a href="{% url 'comics' %}" class="cta-button" style="background: #6c757d;">
+                <i class="fas fa-book"></i> كل الكوميكس
+            </a>
+            
+            {% if user.is_superuser %}
+            <a href="{% url 'add_page' chapter.id %}" class="cta-button secondary">
+                <i class="fas fa-plus"></i> إضافة أول صفحة
+            </a>
+            
+            <a href="{% url 'bulk_add_pages' chapter.id %}" class="cta-button" style="background: #28a745;">
+                <i class="fas fa-layer-group"></i> رفع صفحات متعددة
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

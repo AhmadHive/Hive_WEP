@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .form-container {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+        background: #f8f9fa;
+    }
+
+    .form-header {
+        margin-bottom: 2rem;
+    }
+
+    .form-title {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-card {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 2px rgba(255, 203, 5, 0.2);
+    }
+
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .image-preview {
+        margin-top: 0.5rem;
+    }
+
+    .preview-image {
+        max-width: 200px;
+        max-height: 150px;
+        border-radius: var(--border-radius);
+        border: 2px solid #eee;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 5rem 1rem 2rem;
+        }
+
+        .form-card {
+            padding: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h1 class="form-title">
+            {% if form.instance.id %}Edit Blog{% else %}Add New Blog{% endif %}
+        </h1>
+        <p>{% if form.instance.id %}Update the blog post details{% else %}Create a new blog post for your community{% endif %}</p>
+    </div>
+
+    <div class="form-card">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="error-message">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.content.id_for_label }}" class="form-label">Content *</label>
+                {{ form.content }}
+                {% if form.content.errors %}
+                    <div class="error-message">{{ form.content.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.entrepreneur.id_for_label }}" class="form-label">Entrepreneur *</label>
+                {{ form.entrepreneur }}
+                {% if form.entrepreneur.errors %}
+                    <div class="error-message">{{ form.entrepreneur.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.featured_image.id_for_label }}" class="form-label">Featured Image</label>
+                {{ form.featured_image }}
+                {% if form.featured_image.errors %}
+                    <div class="error-message">{{ form.featured_image.errors }}</div>
+                {% endif %}
+                
+                {% if form.instance.featured_image %}
+                    <div class="image-preview">
+                        <img src="{{ form.instance.featured_image.url }}" alt="Current image" class="preview-image">
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.publish_date.id_for_label }}" class="form-label">Publish Date</label>
+                {{ form.publish_date }}
+                {% if form.publish_date.errors %}
+                    <div class="error-message">{{ form.publish_date.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    {{ form.is_published }} Published
+                </label>
+                <small style="display: block; color: #666;">Check this box to publish the blog immediately</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {% if form.instance.id %}Update Blog{% else %}Create Blog{% endif %}
+                </button>
+                <a href="{% url 'blogs_management' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // تحديث معاينة الصورة عند اختيار صورة جديدة
+    document.getElementById('{{ form.featured_image.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let preview = document.querySelector('.image-preview');
+                if (!preview) {
+                    preview = document.createElement('div');
+                    preview.className = 'image-preview';
+                    e.target.parentNode.appendChild(preview);
+                }
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="preview-image">`;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}

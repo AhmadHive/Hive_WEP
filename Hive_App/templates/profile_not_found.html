@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .not-found-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 2rem; /* 32px */
+    }
+
+    .not-found-content {
+        text-align: center;
+        max-width: 31.25rem; /* 500px */
+        background: white;
+        padding: 3rem; /* 48px */
+        border-radius: 1.25rem; /* 20px */
+        box-shadow: 0 1.25rem 3.75rem rgba(0, 0, 0, 0.1); /* 20px 60px */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .not-found-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 0.25rem; /* 4px */
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .image-section {
+        margin-bottom: 2rem; /* 32px */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 12.5rem; /* 200px */
+    }
+
+.bee-image {
+    width: 66.66%; /* ثلثي المساحة */
+    height: 66.66%; /* ثلثي المساحة */
+    max-width: 12.5rem; /* 200px */
+    max-height: 12.5rem; /* 200px */
+    object-fit: cover;
+    border-radius: 0.625rem; /* 10px */
+    transform: rotate(-90deg); /* تدوير الصورة 90 درجة عكس عقارب الساعة لتطير لليسار */
+}
+
+    .not-found-title {
+        font-size: 2.5rem; /* 40px */
+        color: var(--primary-color);
+        margin-bottom: 1rem; /* 16px */
+        font-weight: 700;
+    }
+
+    .not-found-message {
+        font-size: 1.2rem; /* 19.2px */
+        color: #666;
+        margin-bottom: 2rem; /* 32px */
+        line-height: 1.6;
+    }
+
+    .join-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem; /* 12px */
+        padding: 1rem 2rem; /* 16px 32px */
+        background: #ffcb05; /* اللون المطلوب */
+        color: var(--text-dark);
+        text-decoration: none;
+        border-radius: 1.5625rem; /* 25px */
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 0.5rem 1.5625rem rgba(255, 203, 5, 0.3); /* 8px 25px */
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem; /* 17.6px */
+    }
+
+    .join-button:hover {
+        transform: translateY(-0.1875rem); /* -3px */
+        box-shadow: 0 0.75rem 2.1875rem rgba(255, 203, 5, 0.4); /* 12px 35px */
+        gap: 1rem; /* 16px */
+    }
+
+    .additional-options {
+        margin-top: 2rem; /* 32px */
+        padding-top: 2rem; /* 32px */
+        border-top: 0.0625rem solid #e9ecef; /* 1px */
+    }
+
+    .additional-options p {
+        color: #666;
+        margin-bottom: 1rem; /* 16px */
+    }
+
+    .secondary-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem; /* 8px */
+        padding: 0.75rem 1.5rem; /* 12px 24px */
+        background: transparent;
+        color: var(--primary-color);
+        text-decoration: none;
+        border: 0.125rem solid var(--primary-color); /* 2px */
+        border-radius: 1.25rem; /* 20px */
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin: 0 0.5rem; /* 0 8px */
+    }
+
+    .secondary-button:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-0.125rem); /* -2px */
+    }
+
+    @media (max-width: 48rem) { /* 768px */
+        .not-found-content {
+            padding: 2rem 1.5rem; /* 32px 24px */
+            margin: 1rem; /* 16px */
+        }
+
+        .not-found-title {
+            font-size: 2rem; /* 32px */
+        }
+
+        .not-found-message {
+            font-size: 1.1rem; /* 17.6px */
+        }
+
+        .image-section {
+            height: 9.375rem; /* 150px */
+        }
+
+        .bee-image {
+            width: 66.66%;
+            height: 66.66%;
+            max-width: 9.375rem; /* 150px */
+            max-height: 9.375rem; /* 150px */
+        }
+
+        .join-button {
+            padding: 0.875rem 1.75rem; /* 14px 28px */
+            font-size: 1rem; /* 16px */
+        }
+    }
+
+    @media (max-width: 30rem) { /* 480px */
+        .not-found-container {
+            padding: 1rem; /* 16px */
+        }
+
+        .not-found-content {
+            padding: 1.5rem; /* 24px */
+        }
+
+        .not-found-title {
+            font-size: 1.75rem; /* 28px */
+        }
+
+        .image-section {
+            height: 7.5rem; /* 120px */
+        }
+
+        .bee-image {
+            width: 66.66%;
+            height: 66.66%;
+            max-width: 7.5rem; /* 120px */
+            max-height: 7.5rem; /* 120px */
+        }
+
+        .additional-options {
+            text-align: center;
+        }
+
+        .secondary-button {
+            display: block;
+            margin: 0.5rem 0; /* 8px 0 */
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="not-found-container">
+    <div class="not-found-content">
+        <!-- صورة النحلة مربعة ومقلوبة -->
+        <div class="image-section">
+            <img src="https://i.pinimg.com/1200x/8a/80/18/8a80182358e2d6b135a6ee292c8c3328.jpg" alt="Bee" class="bee-image">
+        </div>
+
+        <h1 class="not-found-title">Profile Not Found</h1>
+        
+        <p class="not-found-message">
+            This profile doesn't exist in our community yet. 
+            Be the first to join and start your entrepreneurial journey with us!
+        </p>
+
+        <a href="{% url 'register' %}" class="join-button">
+            <i class="fas fa-user-plus"></i> Join Our Community
+        </a>
+
+        <div class="additional-options">
+            <p>Explore other options:</p>
+            <a href="{% url 'home' %}" class="secondary-button">
+                <i class="fas fa-home"></i> Go Home
+            </a>
+            <a href="{% url 'blogs_list' %}" class="secondary-button">
+                <i class="fas fa-newspaper"></i> Explore Blogs
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // لا توجد حركات أو تفاعلات
+</script>
+{% endblock %}

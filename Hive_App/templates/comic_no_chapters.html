@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .no-chapters-page {
+        padding: 8rem 5% 4rem;
+        text-align: center;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+    }
+    
+    .no-chapters-content {
+        max-width: 600px;
+        background: white;
+        padding: 3rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+    }
+    
+    .no-chapters-icon {
+        font-size: 4rem;
+        color: var(--secondary-color);
+        margin-bottom: 2rem;
+    }
+    
+    .no-chapters-title {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .no-chapters-message {
+        color: #666;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+    
+    .series-info {
+        background: var(--background-dark);
+        color: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+    }
+    
+    .series-info h3 {
+        color: var(--secondary-color);
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<section class="no-chapters-page">
+    <div class="no-chapters-content">
+        <div class="no-chapters-icon">
+            <i class="fas fa-book-open"></i>
+        </div>
+        
+        <div class="series-info">
+            <h3>{{ series.title }}</h3>
+            <p>{{ series.description }}</p>
+        </div>
+        
+        <h1 class="no-chapters-title">No Chapters Available</h1>
+        
+        <p class="no-chapters-message">
+            This series doesn't have any published chapters yet.
+            {% if user.is_superuser %}
+            <br><br>
+            <strong>As an admin, you can add chapters to this series.</strong>
+            {% else %}
+            <br><br>
+            Please check back later to see chapters when they are published.
+            {% endif %}
+        </p>
+        
+        <div class="action-buttons">
+            <a href="{% url 'comics' %}" class="cta-button">
+                <i class="fas fa-arrow-left"></i> Back to Comics
+            </a>
+            
+            {% if user.is_superuser %}
+            <a href="{% url 'add_chapter' series.id %}" class="cta-button secondary">
+                <i class="fas fa-plus"></i> Add First Chapter
+            </a>
+            
+            <a href="{% url 'comics_management' %}" class="cta-button" style="background: #6c757d;">
+                <i class="fas fa-cog"></i> Manage Comics
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

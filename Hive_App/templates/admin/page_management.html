@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .page-management {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+        background: #f8f9fa;
+    }
+    .pages-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .page-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+    .page-image {
+        height: 250px;
+        overflow: hidden;
+    }
+    .page-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .page-info {
+        padding: 1rem;
+        text-align: center;
+    }
+</style>
+
+<section class="page-management">
+    <div class="page-header">
+        <h1 class="page-title">Pages: Chapter {{ chapter.chapter_number }}</h1>
+        <div class="action-buttons">
+            <a href="{% url 'add_page' chapter.id %}" class="cta-button">Add Page</a>
+            <a href="{% url 'bulk_add_pages' chapter.id %}" class="cta-button">Bulk Add</a>
+        </div>
+    </div>
+
+    <div class="pages-grid">
+        {% for page in pages %}
+        <div class="page-card">
+            <div class="page-image">
+                <img src="{{ page.image.url }}" alt="Page {{ page.page_number }}">
+            </div>
+            <div class="page-info">
+                <div>Page {{ page.page_number }}</div>
+                <div class="page-actions">
+                    <a href="{% url 'edit_page' page.id %}" class="btn btn-edit btn-sm">Edit</a>
+                    <a href="{% url 'delete_page' page.id %}" class="btn btn-delete btn-sm">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>No pages yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

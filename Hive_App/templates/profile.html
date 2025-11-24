@@ -1,0 +1,264 @@
+<!-- templates/profile.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .profile-section {
+        padding: 4rem 5%;
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .profile-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .profile-title {
+        font-size: 2.5rem;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .profile-subtitle {
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        opacity: 0.8;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .profile-header-card {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, #38b6ff 100%);
+        padding: 3rem 2rem;
+        text-align: center;
+        color: white;
+        position: relative;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: white;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: var(--secondary-color);
+        border: 5px solid white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-name {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .profile-username {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 1rem;
+    }
+
+    .profile-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .profile-content {
+        padding: 3rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .info-section {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 15px;
+        border-left: 4px solid var(--secondary-color);
+    }
+
+    .info-section h3 {
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: between;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        min-width: 120px;
+    }
+
+    .info-value {
+        color: #6c757d;
+        flex: 1;
+    }
+
+    .profile-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .edit-btn, .logout-btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .edit-btn {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+    }
+
+    .edit-btn:hover {
+        background: #38b6ff;
+        transform: translateY(-2px);
+    }
+
+    .logout-btn {
+        background: #dc3545;
+        color: white;
+    }
+
+    .logout-btn:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .profile-content {
+            padding: 2rem 1.5rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .profile-header-card {
+            padding: 2rem 1rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            font-size: 2.5rem;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<section class="profile-section">
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1 class="profile-title">Student Profile</h1>
+            <p class="profile-subtitle">Your Hive community information</p>
+        </div>
+
+        <div class="profile-card">
+            <div class="profile-header-card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h2 class="profile-name">{{ student.full_name }}</h2>
+                <p class="profile-username">@{{ student.username }}</p>
+                <span class="profile-badge">
+                    <i class="fas fa-star"></i> Hive Member
+                </span>
+            </div>
+
+            <div class="profile-content">
+                <div class="info-grid">
+                    <!-- المعلومات الشخصية -->
+                    <div class="info-section">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">Full Name:</span>
+                            <span class="info-value">{{ student.full_name }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Age:</span>
+                            <span class="info-value">{{ student.age }} years</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ student.email }}</span>
+                        </div>
+                        
+                    </div>
+
+                    <!-- المعلومات الأكاديمية -->
+                    <div class="info-section">
+                        <h3><i class="fas fa-graduation-cap"></i> Academic Information</h3>
+                        <div class="info-item">
+                            <span class="info-label">University:</span>
+                            <span class="info-value">{{ student.university }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">College:</span>
+                            <span class="info-value">{{ student.college }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Major:</span>
+                            <span class="info-value">{{ student.major }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Join Date:</span>
+                            <span class="info-value">{{ student.join_date|date:"F d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+              
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

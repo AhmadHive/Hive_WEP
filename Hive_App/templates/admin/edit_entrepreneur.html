@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .form-section {
+        padding: 4rem 5%;
+        min-height: 100vh;
+        background: #f8f9fa;
+    }
+    
+    .form-container {
+        max-width: 50rem;
+        margin: 0 auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-title {
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 0.0625rem solid #ddd;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.125rem rgba(255, 203, 5, 0.25);
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+    }
+    
+    .image-preview {
+        width: 7.5rem;
+        height: 7.5rem;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 0.1875rem solid var(--secondary-color);
+        margin: 1rem auto;
+    }
+    
+    .image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+
+<section class="form-section">
+    <div class="form-container">
+        <h1 class="form-title">{% if entrepreneur %}Edit{% else %}Add{% endif %} Entrepreneur</h1>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_name">Full Name</label>
+                {{ form.name }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_company">Company</label>
+                {{ form.company }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_position">Position</label>
+                {{ form.position }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_linkedin_url">LinkedIn URL</label>
+                {{ form.linkedin_url }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_profile_image">Profile Image</label>
+                {{ form.profile_image }}
+                {% if entrepreneur and entrepreneur.profile_image %}
+                <div class="image-preview">
+                    <img src="{{ entrepreneur.profile_image.url }}" alt="Current image">
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_bio">Bio</label>
+                {{ form.bio }}
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    {{ form.is_active }} 
+                    Active (Show on website)
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <a href="{% url 'entrepreneurs_management' %}" class="cta-button" style="background: #6c757d;">Cancel</a>
+                <button type="submit" class="cta-button">
+                    {% if entrepreneur %}Update{% else %}Create{% endif %} Entrepreneur
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    // معاينة الصورة قبل الرفع
+    document.getElementById('id_profile_image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let preview = document.querySelector('.image-preview');
+                if (!preview) {
+                    preview = document.createElement('div');
+                    preview.className = 'image-preview';
+                    e.target.parentNode.appendChild(preview);
+                }
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}

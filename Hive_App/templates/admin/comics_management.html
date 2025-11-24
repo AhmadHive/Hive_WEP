@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .comics-management {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+        background: #f8f9fa;
+    }
+
+    .series-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .series-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+
+    .series-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .series-cover {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .series-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+    }
+
+    .series-card:hover .series-cover img {
+        transform: scale(1.05);
+    }
+
+    .series-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .series-card:hover .series-overlay {
+        opacity: 1;
+    }
+
+    .overlay-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .series-info {
+        padding: 1.5rem;
+    }
+
+    .series-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .series-description {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .series-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: #888;
+    }
+
+    .chapters-count {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .series-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .empty-series {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+    }
+
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-item {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: block;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .comics-management {
+            padding: 5rem 1rem 2rem;
+        }
+
+        .series-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .overlay-actions {
+            flex-direction: column;
+        }
+
+        .series-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<section class="comics-management">
+    <div class="page-header">
+        <h1 class="page-title">Comics Management</h1>
+        <div class="action-buttons">
+            <a href="{% url 'add_comic_series' %}" class="cta-button">
+                <i class="fas fa-plus"></i> Add Series
+            </a>
+        </div>
+    </div>
+
+    <!-- إحصائيات سريعة -->
+    <div class="quick-stats">
+        <div class="stat-item">
+            <span class="stat-number">{{ series_list|length }}</span>
+            <span class="stat-label">Total Series</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">{{ total_chapters }}</span>
+            <span class="stat-label">Total Chapters</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">{{ total_pages }}</span>
+            <span class="stat-label">Total Pages</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">{{ latest_series }}</span>
+            <span class="stat-label">Latest Series</span>
+        </div>
+    </div>
+
+    <!-- شبكة السلاسل -->
+    <div class="series-grid">
+        {% for series in series_list %}
+        <div class="series-card">
+            <div class="series-cover">
+                <img src="{{ series.cover_image.url }}" alt="{{ series.title }}">
+                <div class="series-overlay">
+                    <div class="overlay-actions">
+                        <a href="{% url 'chapter_management' series.id %}" class="btn btn-view btn-sm">
+                            <i class="fas fa-folder-open"></i> Manage
+                        </a>
+                        <a href="{% url 'comic_chapter' series.id 1 %}" class="btn btn-view btn-sm" target="_blank">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="series-info">
+                <h3 class="series-title">{{ series.title }}</h3>
+                <p class="series-description">{{ series.description }}</p>
+                <div class="series-stats">
+                    <span class="chapters-count">{{ series.chapters.count }} Chapters</span>
+                    <span>{{ series.created_date|date:"M d, Y" }}</span>
+                </div>
+                <div class="series-actions">
+                    <a href="{% url 'chapter_management' series.id %}" class="btn btn-view btn-sm">
+                        <i class="fas fa-folder"></i> Chapters
+                    </a>
+                    <a href="{% url 'edit_comic_series' series.id %}" class="btn btn-edit btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'delete_comic_series' series.id %}" class="btn btn-delete btn-sm">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-series">
+            <i class="fas fa-book-open"></i>
+            <h3>No Comic Series</h3>
+            <p>Start by creating your first comic series.</p>
+            <a href="{% url 'add_comic_series' %}" class="cta-button" style="margin-top: 1rem;">
+                <i class="fas fa-plus"></i> Create First Series
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+    // تأكيد الحذف
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to delete this comic series? All chapters and pages will be permanently deleted.')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // تأثيرات التحميل
+    document.addEventListener('DOMContentLoaded', function() {
+        const seriesCards = document.querySelectorAll('.series-card');
+        
+        seriesCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

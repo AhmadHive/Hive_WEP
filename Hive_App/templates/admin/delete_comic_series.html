@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .delete-page {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+        background: #f8f9fa;
+    }
+    .delete-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        text-align: center;
+    }
+    .delete-header {
+        background: #dc3545;
+        color: white;
+        padding: 2rem;
+    }
+    .delete-title {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    .delete-content {
+        padding: 2rem;
+    }
+    .warning-icon {
+        font-size: 4rem;
+        color: #dc3545;
+        margin-bottom: 1rem;
+    }
+    .delete-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        text-decoration: none;
+    }
+</style>
+
+<section class="delete-page">
+    <div class="delete-container">
+        <div class="delete-header">
+            <h1 class="delete-title">Delete Comic Series</h1>
+        </div>
+        <div class="delete-content">
+            <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Are you sure?</h2>
+            <p>You are about to delete the comic series <strong>"{{ series.title }}"</strong>.</p>
+            <p>This action will also delete all chapters and pages associated with this series.</p>
+            <p class="text-danger">This action cannot be undone!</p>
+            
+            <div class="delete-actions">
+                <a href="{% url 'comics_management' %}" class="btn-secondary">Cancel</a>
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-danger">Delete Forever</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

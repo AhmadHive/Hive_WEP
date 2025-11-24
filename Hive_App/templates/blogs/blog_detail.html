@@ -1,0 +1,895 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .blog-detail-container {
+        padding: 6rem 5% 3rem;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        position: relative;
+    }
+
+    .blog-header {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .blog-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .blog-hero-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .blog-content {
+        padding: 3rem;
+    }
+
+    .blog-meta {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .blog-title {
+        font-size: 2.8rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        line-height: 1.3;
+        font-weight: 700;
+    }
+
+    .blog-date {
+        color: #666;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .entrepreneur-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 2.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .entrepreneur-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .entrepreneur-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .entrepreneur-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .entrepreneur-card:hover .entrepreneur-image {
+        transform: scale(1.05);
+    }
+
+    .entrepreneur-info {
+        flex: 1;
+    }
+
+    .entrepreneur-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .entrepreneur-name {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .entrepreneur-name:hover {
+        color: var(--secondary-color);
+    }
+
+    .linkedin-mini {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: #0077b5;
+        color: white;
+        border-radius: 50%;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .linkedin-mini:hover {
+        background: #00669c;
+        transform: scale(1.1);
+    }
+
+    .entrepreneur-details {
+        margin-bottom: 1rem;
+    }
+
+    .entrepreneur-company {
+        font-size: 1.1rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .entrepreneur-position {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+
+    .entrepreneur-bio {
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .profile-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        padding: 0.75rem 1.5rem;
+        border: 2px solid var(--primary-color);
+        border-radius: 25px;
+        background: white;
+    }
+
+    .profile-link:hover {
+        background: var(--primary-color);
+        color: white;
+        gap: 1rem;
+        transform: translateX(5px);
+    }
+
+    .blog-body {
+        line-height: 1.8;
+        font-size: 1.15rem;
+        color: #333;
+        margin-bottom: 2rem;
+    }
+
+    .blog-body h2, 
+    .blog-body h3, 
+    .blog-body h4 {
+        color: var(--primary-color);
+        margin: 2.5rem 0 1.5rem;
+    }
+
+    .blog-body h2 {
+        font-size: 1.9rem;
+        border-bottom: 3px solid var(--secondary-color);
+        padding-bottom: 0.75rem;
+        font-weight: 700;
+    }
+
+    .blog-body h3 {
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+
+    .blog-body h4 {
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    .blog-body p {
+        margin-bottom: 1.5rem;
+    }
+
+    .blog-body img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        margin: 2rem 0;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        transition: all 0.3s ease;
+    }
+
+    .blog-body img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .blog-body blockquote {
+        border-left: 4px solid var(--secondary-color);
+        padding-left: 2rem;
+        margin: 2.5rem 0;
+        font-style: italic;
+        color: #666;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 2rem;
+        border-radius: 0 15px 15px 0;
+        font-size: 1.2rem;
+        line-height: 1.6;
+    }
+
+    .blog-body ul, 
+    .blog-body ol {
+        margin: 1.5rem 0;
+        padding-left: 2rem;
+    }
+
+    .blog-body li {
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+    }
+
+    .blog-body strong {
+        color: var(--primary-color);
+        font-weight: 700;
+    }
+
+    .blog-body em {
+        color: #666;
+        font-style: italic;
+    }
+
+    .blog-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 3rem;
+        padding-top: 2.5rem;
+        border-top: 1px solid #e9ecef;
+        flex-wrap: wrap;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(3, 39, 82, 0.3);
+    }
+
+    .back-btn:hover {
+        background: #032752;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(3, 39, 82, 0.4);
+        gap: 1rem;
+    }
+
+    .share-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        text-decoration: none;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 203, 5, 0.3);
+    }
+
+    .share-btn:hover {
+        background: #e6b800;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 203, 5, 0.4);
+        gap: 1rem;
+    }
+
+    .related-section {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        margin-top: 3rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid var(--secondary-color);
+        font-weight: 700;
+    }
+
+    .related-blogs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+
+    .related-blog-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        border: 1px solid #e9ecef;
+        position: relative;
+    }
+
+    .related-blog-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .related-blog-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .related-blog-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .related-blog-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .related-blog-card:hover .related-blog-image {
+        transform: scale(1.05);
+    }
+
+    .related-blog-content {
+        padding: 1.75rem;
+    }
+
+    .related-blog-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.75rem;
+        text-decoration: none;
+        display: block;
+        line-height: 1.4;
+        transition: all 0.3s ease;
+    }
+
+    .related-blog-title:hover {
+        color: var(--secondary-color);
+    }
+
+    .related-blog-date {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .related-blog-author {
+        color: #888;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* شريط تقدم القراءة */
+    .reading-progress-bar {
+        width: 100%;
+        height: 4px;
+        background: rgba(3, 39, 82, 0.2);
+        position: fixed;
+        top: 70px;
+        left: 0;
+        z-index: 101;
+    }
+
+    .reading-progress-fill {
+        height: 100%;
+        background: var(--secondary-color);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .reading-progress-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .reading-progress-indicator:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 1200px) {
+        .related-blogs {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .blog-detail-container {
+            padding: 5rem 1rem 2rem;
+        }
+
+        .blog-content {
+            padding: 2rem 1.5rem;
+        }
+
+        .blog-title {
+            font-size: 2.2rem;
+        }
+
+        .entrepreneur-card {
+            flex-direction: column;
+            text-align: center;
+            padding: 1.5rem;
+            gap: 1.5rem;
+        }
+
+        .entrepreneur-image {
+            width: 120px;
+            height: 120px;
+        }
+
+        .entrepreneur-header {
+            justify-content: center;
+        }
+
+        .blog-actions {
+            flex-direction: column;
+        }
+
+        .back-btn,
+        .share-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .related-blogs {
+            grid-template-columns: 1fr;
+        }
+
+        .blog-body {
+            font-size: 1.05rem;
+        }
+
+        .blog-body h2 {
+            font-size: 1.6rem;
+        }
+
+        .blog-body h3 {
+            font-size: 1.4rem;
+        }
+
+        .related-section {
+            padding: 2rem 1.5rem;
+        }
+
+        .reading-progress-indicator {
+            bottom: 15px;
+            right: 15px;
+            font-size: 0.7rem;
+            padding: 0.4rem 0.8rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .blog-content {
+            padding: 1.5rem 1rem;
+        }
+
+        .blog-title {
+            font-size: 1.9rem;
+        }
+
+        .blog-hero-image {
+            height: 250px;
+        }
+
+        .related-section {
+            padding: 1.5rem;
+        }
+
+        .reading-progress-indicator {
+            bottom: 10px;
+            right: 10px;
+        }
+    }
+</style>
+
+<!-- شريط تقدم القراءة -->
+<div class="reading-progress-bar">
+    <div class="reading-progress-fill" id="reading-progress-fill"></div>
+</div>
+
+<div class="blog-detail-container">
+    <article class="blog-header">
+        {% if blog.featured_image %}
+            <img src="{{ blog.featured_image.url }}" alt="{{ blog.title }}" class="blog-hero-image">
+        {% else %}
+            <div class="blog-hero-image" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center; color: white;">
+                    <i class="fas fa-newspaper" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                    <h2 style="color: white; margin: 0; font-size: 2rem;">{{ blog.title }}</h2>
+                </div>
+            </div>
+        {% endif %}
+        
+        <div class="blog-content">
+            <div class="blog-meta">
+                <h1 class="blog-title">{{ blog.title }}</h1>
+                <div class="blog-date">
+                    <i class="far fa-calendar"></i>
+                    Published on {{ blog.publish_date|date:"F d, Y" }}
+                </div>
+            </div>
+
+            <!-- بطاقة رائد الأعمال -->
+            <div class="entrepreneur-card">
+                {% if blog.entrepreneur.profile_image %}
+                    <img src="{{ blog.entrepreneur.profile_image.url }}" alt="{{ blog.entrepreneur.name }}" class="entrepreneur-image">
+                {% else %}
+                    <div class="entrepreneur-image" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user-tie" style="font-size: 2.5rem; color: white;"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="entrepreneur-info">
+                    <div class="entrepreneur-header">
+                        <a href="{% url 'entrepreneur_profile' blog.entrepreneur.id %}" class="entrepreneur-name">
+                            {{ blog.entrepreneur.name }}
+                        </a>
+                        {% if blog.entrepreneur.linkedin_url %}
+                            <a href="{{ blog.entrepreneur.linkedin_url }}" target="_blank" class="linkedin-mini">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="entrepreneur-details">
+                        <div class="entrepreneur-company">{{ blog.entrepreneur.company }}</div>
+                        <div class="entrepreneur-position">{{ blog.entrepreneur.position }}</div>
+                    </div>
+                    
+                    {% if blog.entrepreneur.bio %}
+                        <p class="entrepreneur-bio">
+                            {{ blog.entrepreneur.bio|truncatewords:30 }}
+                        </p>
+                    {% endif %}
+                    
+                    <a href="{% url 'entrepreneur_profile' blog.entrepreneur.id %}" class="profile-link">
+                        View Full Profile <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- محتوى المدونة -->
+            <div class="blog-body">
+                {{ blog.content|linebreaks }}
+            </div>
+
+            <!-- أزرار التنقل والمشاركة -->
+            <div class="blog-actions">
+                <a href="{% url 'blogs_list' %}" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> Back to All Blogs
+                </a>
+                <button class="share-btn" onclick="shareBlog()">
+                    <i class="fas fa-share-alt"></i> Share Article
+                </button>
+            </div>
+        </div>
+    </article>
+
+    <!-- المدونات ذات الصلة -->
+    {% if related_blogs %}
+    <div class="related-section">
+        <h3 class="section-title">More from {{ blog.entrepreneur.name }}</h3>
+        <div class="related-blogs">
+            {% for related_blog in related_blogs %}
+            <div class="related-blog-card">
+                {% if related_blog.featured_image %}
+                    <img src="{{ related_blog.featured_image.url }}" alt="{{ related_blog.title }}" class="related-blog-image">
+                {% else %}
+                    <div class="related-blog-image" style="background: linear-gradient(135deg, #e9ecef, #dee2e6); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-newspaper" style="font-size: 2.5rem; color: #adb5bd;"></i>
+                    </div>
+                {% endif %}
+                <div class="related-blog-content">
+                    <a href="{% url 'blog_detail' related_blog.id %}" class="related-blog-title">
+                        {{ related_blog.title }}
+                    </a>
+                    <div class="related-blog-date">
+                        <i class="far fa-calendar"></i>
+                        {{ related_blog.publish_date|date:"M d, Y" }}
+                    </div>
+                    <div class="related-blog-author">
+                        By {{ related_blog.entrepreneur.name }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- مدونات مقترحة -->
+    {% if suggested_blogs %}
+    <div class="related-section">
+        <h3 class="section-title">You Might Also Like</h3>
+        <div class="related-blogs">
+            {% for suggested_blog in suggested_blogs %}
+            <div class="related-blog-card">
+                {% if suggested_blog.featured_image %}
+                    <img src="{{ suggested_blog.featured_image.url }}" alt="{{ suggested_blog.title }}" class="related-blog-image">
+                {% else %}
+                    <div class="related-blog-image" style="background: linear-gradient(135deg, #e9ecef, #dee2e6); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-newspaper" style="font-size: 2.5rem; color: #adb5bd;"></i>
+                    </div>
+                {% endif %}
+                <div class="related-blog-content">
+                    <a href="{% url 'blog_detail' suggested_blog.id %}" class="related-blog-title">
+                        {{ suggested_blog.title }}
+                    </a>
+                    <div class="related-blog-date">
+                        <i class="far fa-calendar"></i>
+                        {{ suggested_blog.publish_date|date:"M d, Y" }}
+                    </div>
+                    <div class="related-blog-author">
+                        By {{ suggested_blog.entrepreneur.name }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- مؤشر تقدم القراءة -->
+<div class="reading-progress-indicator" id="reading-progress-text">0%</div>
+
+<script>
+    // دالة المشاركة
+    function shareBlog() {
+        const title = '{{ blog.title }}';
+        const text = '{{ blog.content|striptags|truncatewords:20 }}';
+        const url = window.location.href;
+
+        if (navigator.share) {
+            navigator.share({
+                title: title,
+                text: text,
+                url: url
+            })
+            .then(() => {
+                // تأثير نجاح المشاركة
+                const shareBtn = document.querySelector('.share-btn');
+                const originalHTML = shareBtn.innerHTML;
+                shareBtn.innerHTML = '<i class="fas fa-check"></i> Shared!';
+                shareBtn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    shareBtn.innerHTML = originalHTML;
+                    shareBtn.style.background = '';
+                }, 2000);
+            })
+            .catch((error) => console.log('Error sharing:', error));
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            navigator.clipboard.writeText(url).then(() => {
+                const shareBtn = document.querySelector('.share-btn');
+                const originalHTML = shareBtn.innerHTML;
+                shareBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                shareBtn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    shareBtn.innerHTML = originalHTML;
+                    shareBtn.style.background = '';
+                }, 2000);
+            }).catch(() => {
+                // Fallback if clipboard API is not supported
+                prompt('Copy this link to share:', url);
+            });
+        }
+    }
+
+    // تتبع تقدم القراءة
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressFill = document.getElementById('reading-progress-fill');
+        const progressText = document.getElementById('reading-progress-text');
+        const blogContainer = document.querySelector('.blog-detail-container');
+        let readingProgress = 0;
+
+        function updateReadingProgress() {
+            const scrollTop = window.pageYOffset;
+            const containerTop = blogContainer.offsetTop;
+            const containerHeight = blogContainer.offsetHeight;
+            const windowHeight = window.innerHeight;
+            
+            if (scrollTop >= containerTop) {
+                const progress = ((scrollTop - containerTop) / (containerHeight - windowHeight)) * 100;
+                readingProgress = Math.min(100, Math.max(0, progress));
+                
+                progressFill.style.width = readingProgress + '%';
+                progressText.textContent = Math.round(readingProgress) + '%';
+                
+                // حفظ التقدم في localStorage
+                const blogId = window.location.pathname;
+                localStorage.setItem(`readingProgress_${blogId}`, readingProgress);
+                
+                // تحديث لون المؤشر بناءً على التقدم
+                updateProgressColor();
+            }
+        }
+
+        // تحديث لون المؤشر بناءً على التقدم
+        function updateProgressColor() {
+            if (readingProgress >= 90) {
+                progressText.style.color = 'white';
+            } else if (readingProgress >= 50) {
+                progressFill.style.background = '#ffc107'; // أصفر عند المنتصف
+                progressText.style.background = '#ffc107';
+                progressText.style.color = 'var(--text-dark)';
+            } else {
+                progressFill.style.background = 'var(--secondary-color)'; // اللون الأساسي
+                progressText.style.background = 'var(--secondary-color)';
+                progressText.style.color = 'var(--text-dark)';
+            }
+        }
+
+        // استعادة التقدم المحفوظ
+        const blogId = window.location.pathname;
+        const savedProgress = localStorage.getItem(`readingProgress_${blogId}`);
+        if (savedProgress) {
+            setTimeout(() => {
+                const targetScroll = blogContainer.offsetTop + (blogContainer.offsetHeight * savedProgress / 100);
+                window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+            }, 500);
+        }
+
+        // تحديث التقدم عند التمرير وتغيير حجم النافذة
+        window.addEventListener('scroll', updateReadingProgress);
+        window.addEventListener('resize', updateReadingProgress);
+
+        // تفاعل عند النقر على المؤشر
+        progressText.addEventListener('click', function() {
+            if (readingProgress >= 90) {
+                // العودة للأعلى إذا كان المستخدم قرب النهاية
+                window.scrollTo({ top: blogContainer.offsetTop, behavior: 'smooth' });
+            } else {
+                // التمرير لنهاية المقال
+                const containerBottom = blogContainer.offsetTop + blogContainer.offsetHeight - window.innerHeight;
+                window.scrollTo({ top: containerBottom, behavior: 'smooth' });
+            }
+        });
+
+        // إضافة تأثيرات تفاعلية
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.5s ease';
+        });
+
+        // إضافة زر التنقل السريع للأعلى فقط
+        const quickNav = document.createElement('div');
+        quickNav.innerHTML = `
+            <div style="position: fixed; bottom: 80px; right: 25px; display: flex; flex-direction: column; gap: 12px; z-index: 1000;">
+                <button onclick="scrollToTop()" style="width: 55px; height: 55px; border-radius: 50%; background: var(--secondary-color); border: none; color: var(--text-dark); cursor: pointer; font-size: 1.3rem; transition: all 0.3s ease; opacity: 0; transform: scale(0); box-shadow: 0 4px 15px rgba(255, 203, 5, 0.3);">
+                    ↑
+                </button>
+            </div>
+        `;
+        document.body.appendChild(quickNav);
+
+        // دالة التمرير للأعلى
+        window.scrollToTop = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        };
+
+        // إظهار/إخفاء زر التمرير للأعلى
+        const scrollBtn = quickNav.querySelector('button');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                scrollBtn.style.opacity = '1';
+                scrollBtn.style.transform = 'scale(1)';
+            } else {
+                scrollBtn.style.opacity = '0';
+                scrollBtn.style.transform = 'scale(0)';
+            }
+        });
+
+        // تأثيرات للروابط داخل المحتوى
+        document.querySelectorAll('.blog-body a').forEach(link => {
+            link.style.color = 'var(--secondary-color)';
+            link.style.textDecoration = 'none';
+            link.style.fontWeight = '600';
+            link.style.transition = 'all 0.3s ease';
+            link.addEventListener('mouseenter', function() {
+                this.style.textDecoration = 'underline';
+                this.style.color = 'var(--primary-color)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.textDecoration = 'none';
+                this.style.color = 'var(--secondary-color)';
+            });
+        });
+
+        // تحديث أولي
+        updateReadingProgress();
+    });
+</script>
+{% endblock %}

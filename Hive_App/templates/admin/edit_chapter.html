@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="form-page">
+    <div class="form-container">
+        <div class="form-header">
+            <h1 class="form-title">Edit Chapter {{ chapter.chapter_number }}</h1>
+        </div>
+        <form method="post" class="form-content">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Chapter Number</label>
+                <input type="number" name="chapter_number" class="form-input" value="{{ chapter.chapter_number }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" name="title" class="form-input" value="{{ chapter.title }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-textarea" rows="3">{{ chapter.description }}</textarea>
+            </div>
+            <div class="form-actions">
+                <a href="{% url 'chapter_management' chapter.series.id %}" class="btn-secondary">Cancel</a>
+                <button type="submit" class="cta-button">Update Chapter</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
