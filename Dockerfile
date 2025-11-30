@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # منع الرسائل التفاعلية أثناء التثبيت
 
@@ -6,7 +6,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # تثبيت المتطلبات الأساسية لتجميع mysqlclient وحزم أخرى
 
-RUN apt-get update && apt-get install -y build-essential default-libmysqlclient-dev pkg-config && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y 
+build-essential 
+default-libmysqlclient-dev 
+pkg-config 
+&& rm -rf /var/lib/apt/lists/*
 
 # إعداد مجلد العمل
 
