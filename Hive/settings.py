@@ -83,17 +83,16 @@ WSGI_APPLICATION = 'Hive.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Hive',
-        'USER': 'root',
-        'PASSWORD': 'Whoyouare98$',
-        'HOST': 'localhost',
+        'NAME': os.getenv("MYSQL_DB"),
+        'USER': os.getenv("MYSQL_USER"),
+        'PASSWORD': os.getenv("MYSQL_PASSWORD"),
+        'HOST': os.getenv("MYSQL_HOST"),
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
     }
 }
-
 # ===========================
 # AUTH PASSWORD VALIDATION
 # ===========================
