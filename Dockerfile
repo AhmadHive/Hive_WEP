@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# تحديث النظام وتثبيت المتطلبات الأساسية لتجميع mysqlclient وحزم أخرى
+# Install system deps needed by mysqlclient
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -12,22 +12,25 @@ RUN apt-get update && \
         git \
         libssl-dev \
         libffi-dev \
+        netcat-openbsd \
         && rm -rf /var/lib/apt/lists/*
 
-# إعداد مجلد العمل
+# Set work directory
 WORKDIR /app
 
-# نسخ ملف requirements وتحديث pip أولاً
-COPY requirements.txt .
+# Copy requirements first (better caching)
+COPY requirements.txt ./
 RUN pip install --upgrade pip
-# تثبيت الحزم المطلوبة، مع التأكد من أن Python 3.11 متوافق
 RUN pip install --no-cache-dir -r requirements.txt
 
-# نسخ باقي ملفات المشروع
+# Copy all project files
 COPY . .
 
-# فتح البورت
+# Make wait-for-db executable
+RUN chmod +x /app/wait-for-db.sh
+
+# Expose Django port
 EXPOSE 8000
 
-# تشغيل السيرفر
+# Default command (overridden by docker-compose)
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
