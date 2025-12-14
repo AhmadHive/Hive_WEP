@@ -26,8 +26,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy all project files
 COPY . .
 
-# Make wait-for-db executable
-RUN chmod +x /app/wait-for-db.sh
+# Fix line endings and make wait-for-db executable
+RUN sed -i 's/\r$//' /app/wait-for-db.sh && chmod +x /app/wait-for-db.sh
 
 # Expose Django port
 EXPOSE 8000
