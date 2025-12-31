@@ -1,0 +1,192 @@
+<!-- templates/admin/delete_news.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .delete-news-container {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .warning-icon {
+        font-size: 4rem;
+        color: #dc3545;
+        margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+        color: #dc3545;
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+    }
+
+    .news-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 2rem 0;
+        border-left: 4px solid #dc3545;
+        text-align: left;
+    }
+
+    .news-info h3 {
+        color: #032752;
+        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+    }
+
+    .news-image {
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .news-image img {
+        max-width: 200px;
+        max-height: 150px;
+        border-radius: 8px;
+        border: 2px solid #e1e5eb;
+    }
+
+    .warning-message {
+        background: #fff3cd;
+        color: #856404;
+        padding: 1rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        border: 1px solid #ffeaa7;
+        font-weight: 500;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        min-width: 140px;
+        justify-content: center;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #545b62;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .delete-news-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="delete-news-container">
+    <div class="warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    
+    <h1 class="page-title">Delete News Article</h1>
+    
+    <div class="warning-message">
+        <i class="fas fa-exclamation-circle"></i>
+        <strong>Warning:</strong> This action cannot be undone. The news article will be permanently deleted.
+    </div>
+
+    <div class="news-info">
+        <h3>{{ news_item.title }}</h3>
+        <p><strong>Published:</strong> {{ news_item.publish_date|date:"F d, Y" }}</p>
+        <p><strong>Content Preview:</strong> {{ news_item.content|truncatewords:20 }}</p>
+        
+        {% if news_item.image %}
+        <div class="news-image">
+            <p><small>Current Image:</small></p>
+            <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}">
+        </div>
+        {% endif %}
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger" onclick="return confirmDelete()">
+                <i class="fas fa-trash"></i> Confirm Delete
+            </button>
+            <a href="{% url 'news_management' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function confirmDelete() {
+        return confirm('Are you absolutely sure you want to delete this news article? This action cannot be undone.');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape key to cancel
+            if (e.key === 'Escape') {
+                window.location.href = "{% url 'news_management' %}";
+            }
+            // Ctrl+Enter to confirm delete
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                document.querySelector('.btn-danger').click();
+            }
+        });
+
+        // Add confirmation on form submit
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            if (!confirmDelete()) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,289 @@
+<!-- templates/admin/edit_news.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .edit-news-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-title {
+        color: #032752;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid #ffcb05;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .page-title i {
+        color: #ffcb05;
+    }
+
+    .news-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #032752;
+        font-size: 1rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+        padding: 0.75rem;
+        border: 2px solid #e1e5eb;
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input[type="text"]:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #38b6ff;
+        box-shadow: 0 0 0 3px rgba(56, 182, 255, 0.1);
+    }
+
+    .form-group textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .form-group input[type="file"] {
+        padding: 0.5rem;
+        border: 2px dashed #e1e5eb;
+        border-radius: 8px;
+        background: #f8f9fa;
+        cursor: pointer;
+    }
+
+    .current-image {
+        margin-top: 0.5rem;
+    }
+
+    .current-image img {
+        max-width: 200px;
+        max-height: 150px;
+        border-radius: 8px;
+        border: 2px solid #e1e5eb;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e1e5eb;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: #032752;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #021c3a;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #545b62;
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+
+    .form-errors {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #dc3545;
+    }
+
+    .form-errors ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .edit-news-container {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="edit-news-container">
+    <h1 class="page-title">
+        <i class="fas fa-edit"></i>
+        Edit News: {{ news_item.title }}
+    </h1>
+
+    {% if form.errors %}
+    <div class="form-errors">
+        <strong>Please correct the following errors:</strong>
+        <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="news-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_title">Title:</label>
+            {{ form.title }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_content">Content:</label>
+            {{ form.content }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_image">Image:</label>
+            {{ form.image }}
+            {% if news_item.image %}
+            <div class="current-image">
+                <p><small>Current Image:</small></p>
+                <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}">
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_publish_date">Publish Date:</label>
+            {{ form.publish_date }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Update News
+            </button>
+            <a href="{% url 'news_management' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+            <a href="{% url 'delete_news' news_item.id %}" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Delete
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add date picker functionality
+        const dateInput = document.querySelector('#id_publish_date');
+        if (dateInput) {
+            dateInput.type = 'datetime-local';
+        }
+
+        // Image preview
+        const imageInput = document.querySelector('#id_image');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.querySelector('.current-image');
+                        if (!preview.querySelector('.new-image')) {
+                            const newImg = document.createElement('div');
+                            newImg.className = 'new-image';
+                            newImg.innerHTML = `
+                                <p><small>New Image Preview:</small></p>
+                                <img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 150px;">
+                            `;
+                            preview.appendChild(newImg);
+                        } else {
+                            preview.querySelector('.new-image img').src = e.target.result;
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Form validation
+        const form = document.querySelector('.news-form');
+        form.addEventListener('submit', function(e) {
+            const title = document.querySelector('#id_title').value.trim();
+            const content = document.querySelector('#id_content').value.trim();
+            
+            if (!title) {
+                e.preventDefault();
+                alert('Please enter a title for the news.');
+                document.querySelector('#id_title').focus();
+            } else if (!content) {
+                e.preventDefault();
+                alert('Please enter content for the news.');
+                document.querySelector('#id_content').focus();
+            }
+        });
+    });
+</script>
+{% endblock %}

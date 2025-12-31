@@ -3,491 +3,757 @@
 
 {% block content %}
 <style>
-    /* أنماط الصفحة الرئيسية */
+    /* Hero Section */
     .hero {
-    background: linear-gradient(135deg, var(--background-dark) 0%, #021c3a 100%);
-    color: var(--text-light);
-    padding: 6rem 5% 4rem;
-    text-align: center;
-    position: relative;
-}
-
-.hero-container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.value-card p {
-    color: black;
-}
-
-.hero-title {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    color: var(--secondary-color);
-    line-height: 1.2;
-}
-
-.hero-description {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    opacity: 0.9;
-    line-height: 1.6;
-}
-
-.hero-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.admin-btn {
-    background: transparent;
-    color: var(--text-light);
-    padding: 0.75rem 1.5rem;
-    border: 2px solid var(--secondary-color);
-    border-radius: var(--border-radius);
-    text-decoration: none;
-    font-weight: 600;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.admin-btn:hover {
-    background: var(--secondary-color);
-    color: var(--text-dark);
-    transform: translateY(-2px);
-}
-
-.section {
-    padding: 4rem 5%;
-}
-
-.section-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.section-title {
-    font-size: 2.5rem;
-    color: var(--secondary-color);
-    margin-bottom: 3rem;
-    text-align: center;
-}
-
-.section-dark {
-    background-color: var(--background-dark);
-    color: var(--text-light);
-}
-
-/* News Carousel */
-.news-carousel {
-    position: relative;
-    margin: 2rem 0;
-}
-
-.news-cards-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    gap: 1.5rem;
-    padding: 1rem 0;
-    scrollbar-width: none;
-}
-
-.news-cards-container::-webkit-scrollbar {
-    display: none;
-}
-
-.news-card {
-    min-width: 300px;
-    background: white;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-}
-
-.news-card:hover {
-    transform: translateY(-5px);
-}
-
-.news-image {
-    height: 200px;
-    overflow: hidden;
-}
-
-.news-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: var(--transition);
-}
-
-.news-card:hover .news-image img {
-    transform: scale(1.05);
-}
-
-.news-content {
-    padding: 1.5rem;
-    text-align: left;
-}
-
-.news-content h3 {
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-}
-
-.read-more {
-    color: var(--secondary-color);
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.carousel-btn {
-    background-color: var(--secondary-color);
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    transition: var(--transition);
-}
-
-.carousel-btn:hover {
-    background-color: #ffcb05;
-}
-
-.prev-btn {
-    left: -20px;
-}
-
-.next-btn {
-    right: -20px;
-}
-
-/* Grids */
-.services-grid, .values-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.service-card, .value-card {
-    background: white;
-    border-radius: var(--border-radius);
-    padding: 2rem;
-    text-align: center;
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-}
-
-.service-card:hover, .value-card:hover {
-    transform: translateY(-5px);
-}
-
-.service-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 1rem;
-    background-color: var(--secondary-color);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    color: var(--text-dark);
-}
-
-.value-card h3 {
-    color: var(--secondary-color);
-    margin-bottom: 1rem;
-}
-
-/* Benefits List */
-.benefits-list {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.benefit-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    text-align: left;
-}
-
-.benefit-item i {
-    color: var(--secondary-color);
-    font-size: 1.5rem;
-    margin-right: 1rem;
-    margin-left: 0;
-    flex-shrink: 0;
-}
-
-.benefit-item p {
-    margin: 0;
-}
-
-/* Trusted By Section */
-.trusted-companies {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
-    gap: 3rem;
-    justify-items: center;
-    max-width: 50rem;
-    margin: 0 auto;
-}
-
-.company-item {
-    text-align: center;
-    transition: var(--transition);
-}
-
-.company-item:hover {
-    transform: translateY(-0.3125rem);
-}
-
-.company-logo {
-    width: 7.5rem;
-    height: 7.5rem;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 1rem;
-    border: 0.1875rem solid var(--secondary-color);
-    box-shadow: var(--shadow);
-}
-
-.company-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.company-item h3 {
-    color: var(--primary-color);
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.linkedin-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    background: #0077b5;
-    color: white;
-    border-radius: 50%;
-    text-decoration: none;
-    transition: var(--transition);
-    font-size: 1.2rem;
-}
-
-.linkedin-link:hover {
-    background: #005582;
-    transform: scale(1.1);
-    color: white;
-}
-
-/* Responsive Design */
-@media (max-width: 48rem) {
-    .trusted-companies {
-        grid-template-columns: repeat(auto-fit, minmax(9.375rem, 1fr));
-        gap: 2rem;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+        color: var(--text-light);
+        padding: 8rem 5% 6rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        direction: ltr;
     }
-    
-    .company-logo {
-        width: 6.25rem;
-        height: 6.25rem;
+
+    .hero-container {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
     }
-    
-    .linkedin-link {
-        width: 2rem;
-        height: 2rem;
-        font-size: 1rem;
-    }
-}
 
-@media (max-width: 30rem) {
-    .trusted-companies {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-}
-
-/* Vision & Mission */
-.vm-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-}
-
-.vm-card {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius);
-    padding: 2.5rem 2rem;
-    text-align: center;
-    border-top: 5px solid var(--secondary-color);
-}
-
-.vm-card h2 {
-    color: var(--secondary-color);
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-}
-
-/* Join Section بدون الفورم */
-.join-section {
-    background: linear-gradient(135deg, var(--background-dark) 0%, #021c3a 100%);
-    padding: 6rem 5%;
-    text-align: center;
-    color: var(--text-light);
-}
-
-.join-content {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.join-content h2 {
-    color: var(--secondary-color);
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.join-content p {
-    font-size: 1.2rem;
-    margin-bottom: 2.5rem;
-    opacity: 0.9;
-    line-height: 1.6;
-}
-
-.join-actions {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.secondary-btn {
-    background: transparent;
-    color: var(--text-light);
-    padding: 0.75rem 1.5rem;
-    border: 2px solid var(--secondary-color);
-    border-radius: var(--border-radius);
-    text-decoration: none;
-    font-weight: 600;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.secondary-btn:hover {
-    background: var(--secondary-color);
-    color: var(--text-dark);
-    transform: translateY(-2px);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
     .hero-title {
-        font-size: 2.2rem;
+        font-size: 3.2rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-light);
+        line-height: 1.3;
+        font-weight: 800;
+        text-align: center;
     }
 
-    .section-title {
-        font-size: 2rem;
+    .hero-title span {
+        color: var(--secondary-color);
+        display: block;
+        font-size: 3.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .hero-description {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        line-height: 1.8;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
     }
 
     .hero-actions {
-        flex-direction: column;
-        align-items: center;
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+        direction: ltr;
     }
 
-    .carousel-btn {
+    .admin-btn {
+        background: transparent;
+        color: var(--text-light);
+        padding: 0.85rem 2rem;
+        border: 2px solid var(--secondary-color);
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .admin-btn:hover {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* Section Styles */
+    .section {
+        padding: 6rem 5%;
+        text-align: center;
+        direction: ltr;
+    }
+
+    .section-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 3rem;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--secondary-color);
+        border-radius: 2px;
+    }
+
+    .section-dark .section-title {
+        color: var(--text-light);
+    }
+
+    .section-dark .section-title:after {
+        background: var(--secondary-color);
+    }
+
+    /* News Carousel */
+    .news-carousel {
+        position: relative;
+        margin: 3rem 0;
+        direction: ltr;
+    }
+
+    .news-cards-container {
+        display: flex;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        gap: 2rem;
+        padding: 1rem 0;
+        scrollbar-width: none;
+        direction: ltr;
+    }
+
+    .news-cards-container::-webkit-scrollbar {
         display: none;
     }
 
-    .benefit-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
+    .news-card {
+        min-width: 350px;
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        text-align: left;
     }
 
-    .benefit-item i {
-        margin-right: 0;
-        margin-left: 0;
+    .news-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-hover);
     }
 
-    .join-actions {
-        flex-direction: column;
+    .news-image {
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .news-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 1s ease;
+    }
+
+    .news-card:hover .news-image img {
+        transform: scale(1.1);
+    }
+
+    .news-content {
+        padding: 2rem;
+        text-align: left;
+    }
+
+    .news-content h3 {
+        margin-bottom: 0.75rem;
+        font-size: 1.3rem;
+        color: var(--primary-color);
+        line-height: 1.4;
+        text-align: left;
+    }
+
+    .news-date {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        display: flex;
         align-items: center;
+        gap: 0.5rem;
+        justify-content: flex-start;
     }
 
-    .vm-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-title {
-        font-size: 1.8rem;
+    .news-date i {
+        color: var(--secondary-color);
     }
 
+    .read-more {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        position: relative;
+        direction: ltr;
+    }
+
+    .read-more:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background-color: var(--secondary-color);
+        transition: var(--transition);
+    }
+
+    .read-more:hover:after {
+        width: 100%;
+    }
+
+    .carousel-btn {
+        background-color: var(--secondary-color);
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+    }
+
+    .carousel-btn:hover {
+        background-color: var(--secondary-light);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .prev-btn {
+        left: -25px;
+    }
+
+    .next-btn {
+        right: -25px;
+    }
+
+    /* Grids */
     .services-grid, .values-grid {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2.5rem;
+        margin-top: 3rem;
+        direction: ltr;
     }
 
     .service-card, .value-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 2.5rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .service-card:before, .value-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+    }
+
+    .service-card:hover:before, .value-card:hover:before {
+        transform: scaleX(1);
+    }
+
+    .service-card:hover, .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .service-icon {
+        width: 90px;
+        height: 90px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        color: var(--text-dark);
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+    }
+
+    .service-card:hover .service-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .service-card h3, .value-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .service-card p, .value-card p {
+        color: var(--text-medium);
+        line-height: 1.7;
+        text-align: center;
+    }
+
+    /* Benefits List */
+    .benefits-list {
+        max-width: 900px;
+        margin: 0 auto;
+        direction: ltr;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
         padding: 1.5rem;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        border-left: 5px solid var(--secondary-color);
+        text-align: left;
     }
 
-    .hero-actions .cta-button,
-    .hero-actions .admin-btn {
-        width: 100%;
-        text-align: center;
-        justify-content: center;
+    .benefit-item:hover {
+        transform: translateX(10px);
+        box-shadow: var(--shadow-hover);
     }
 
-    .join-actions .cta-button,
-    .join-actions .secondary-btn {
-        width: 100%;
-        text-align: center;
-        justify-content: center;
+    .benefit-item i {
+        color: var(--secondary-color);
+        font-size: 1.8rem;
+        margin-right: 1.5rem;
+        flex-shrink: 0;
     }
-}
+
+    .benefit-item p {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--text-medium);
+        text-align: left;
+    }
+
+    /* Trusted By Section */
+    .trusted-companies {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        justify-items: center;
+        max-width: 1000px;
+        margin: 0 auto;
+        direction: ltr;
+    }
+
+    .company-item {
+        text-align: center;
+        transition: var(--transition);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        background: white;
+    }
+
+    .company-item:hover {
+        transform: translateY(-10px);
+    }
+
+    .company-logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto 1.5rem;
+        border: 3px solid var(--secondary-color);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .company-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+    }
+
+    .company-item:hover .company-logo img {
+        transform: scale(1.1);
+    }
+
+    .company-item h3 {
+        color: var(--primary-color);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .linkedin-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        background: #0077b5;
+        color: white;
+        border-radius: 50%;
+        text-decoration: none;
+        transition: var(--transition);
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
+    }
+
+    .linkedin-link:hover {
+        background: #005582;
+        transform: scale(1.1) rotate(5deg);
+        color: white;
+    }
+
+    /* Vision & Mission */
+    .vm-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 3rem;
+        max-width: 1000px;
+        margin: 0 auto;
+        direction: ltr;
+    }
+
+    .vm-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: var(--border-radius);
+        padding: 3rem 2.5rem;
+        text-align: center;
+        border-top: 5px solid var(--secondary-color);
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .vm-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .vm-card h2 {
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .vm-card p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        opacity: 0.95;
+        text-align: center;
+    }
+
+    /* Join Section */
+    .join-section {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+        padding: 6rem 5%;
+        text-align: center;
+        color: var(--text-light);
+        position: relative;
+        overflow: hidden;
+        direction: ltr;
+    }
+
+    .join-content {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .join-content h2 {
+        color: var(--secondary-color);
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .join-content p {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        line-height: 1.8;
+        text-align: center;
+    }
+
+    .join-actions {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+        direction: ltr;
+    }
+
+    .secondary-btn {
+        background: transparent;
+        color: var(--text-light);
+        padding: 0.85rem 2rem;
+        border: 2px solid var(--secondary-color);
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .secondary-btn:hover {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .join-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+        padding-top: 3rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: left;
+        direction: ltr;
+    }
+
+    .feature-item h4 {
+        color: var(--text-light);
+        margin-bottom: 0.75rem;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        justify-content: flex-start;
+    }
+
+    .feature-item h4 i {
+        color: var(--secondary-color);
+    }
+
+    .feature-item p {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        line-height: 1.6;
+        text-align: left;
+    }
+
+    /* Story Section */
+    .story-section {
+        position: relative;
+        padding: 6rem 5%;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        direction: ltr;
+    }
+
+    .story-content {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: var(--text-medium);
+    }
+
+    .story-highlight {
+        background: var(--secondary-color);
+        color: var(--text-dark);
+        padding: 0.2rem 0.5rem;
+        border-radius: var(--border-radius-sm);
+        font-weight: 600;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.3rem;
+        }
+        
+        .hero-title span {
+            font-size: 2.8rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .hero-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .carousel-btn {
+            display: none;
+        }
+
+        .news-card {
+            min-width: 280px;
+        }
+
+        .benefit-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .benefit-item i {
+            margin-right: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-item p {
+            text-align: center;
+        }
+
+        .join-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .vm-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .vm-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .trusted-companies {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item h4, .feature-item p {
+            text-align: center;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-title span {
+            font-size: 2.3rem;
+        }
+
+        .services-grid, .values-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .service-card, .value-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .hero-actions .cta-button,
+        .hero-actions .admin-btn {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .join-actions .cta-button,
+        .join-actions .secondary-btn {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .section {
+            padding: 4rem 5%;
+        }
+
+        .vm-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .join-features {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Center Alignment for All Elements */
+    .center-text {
+        text-align: center;
+    }
+
+    .center-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 
-<!-- قسم الهيرو -->
-<section class="hero">
+<!-- Hero Section -->
+<section class="hero fade-in-up">
     <div class="hero-container">
-        <h1 class="hero-title">Empowering the Next Generation</h1>
-        <p class="hero-description">Hive is a student-led community bridging the gap between academic theory and real-world practice. We equip students with the skills, network, and experience to thrive.</p>
+        <h1 class="hero-title">
+            Empowering
+            <span>The Next Generation</span>
+        </h1>
+        <p class="hero-description">
+            Hive is a student community bridging the gap between academic theory and practical application. 
+            We equip students with the skills, networks, and experience needed to succeed in today's competitive world.
+        </p>
         
         <div class="hero-actions">
-            <a href="{% url 'register' %}" class="cta-button">Join Us Now</a>
+            <a href="{% url 'register' %}" class="cta-button pulse-button">
+                <i class="fas fa-rocket"></i> Start Your Journey
+            </a>
             
-            <!-- زر لوحة التحكم - يظهر فقط للمشرفين -->
+            <!-- Admin Panel Button - Shows only for superusers -->
             {% if user.is_superuser %}
             <a href="{% url 'admin_panel' %}" class="admin-btn">
                 <i class="fas fa-cog"></i> Admin Panel
@@ -497,196 +763,213 @@
     </div>
 </section>
 
-<!-- قسم الأخبار الحديثة -->
-<section class="section">
+<!-- Recent News Section -->
+<section class="section fade-in-up">
     <div class="section-container">
-        <h2 class="section-title">Recent News</h2>
+        <h2 class="section-title">Latest News</h2>
         <div class="news-carousel">
             <button class="carousel-btn prev-btn">
-                <i class="fas fa-chevron-right"></i>
+                <i class="fas fa-chevron-left"></i>
             </button>
             <div class="news-cards-container">
                 {% for news in recent_news %}
                 <div class="news-card">
-                    <div class="news-image">
+                    <div class="news-image soft-zoom-container">
                         {% if news.image %}
-                        <img src="{{ news.image.url }}" alt="{{ news.title }}">
+                        <img src="{{ news.image.url }}" alt="{{ news.title }}" class="soft-zoom-img">
                         {% else %}
-                        <img src="{% static 'images/default-news.jpg' %}" alt="Default News Image">
+                        <img src="{% static 'images/default-news.jpg' %}" alt="Default News Image" class="soft-zoom-img">
                         {% endif %}
                     </div>
                     <div class="news-content">
                         <h3>{{ news.title }}</h3>
-                        <p class="news-date">{{ news.publish_date|date:"F d, Y" }}</p>
+                        <p class="news-date">
+                            <i class="far fa-calendar"></i> {{ news.publish_date|date:"d F, Y" }}
+                        </p>
                         <a href="{% url 'news_detail' news.id %}" class="read-more">
-                            Read More <i class="fas fa-arrow-left"></i>
+                            Read More <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
                 {% empty %}
-                <div class="no-news">
-                    <p>No recent news available.</p>
+                <div class="no-news" style="text-align: center; padding: 3rem; grid-column: 1/-1;">
+                    <h3 style="color: var(--text-muted);">No Recent News</h3>
+                    <p style="color: var(--text-muted); margin-top: 1rem;">Stay tuned for updates!</p>
                 </div>
                 {% endfor %}
             </div>
             <button class="carousel-btn next-btn">
-                <i class="fas fa-chevron-left"></i>
+                <i class="fas fa-chevron-right"></i>
             </button>
         </div>
     </div>
 </section>
 
-<!-- قسم Our Story -->
-<section class="section section-dark">
+<!-- Story Section -->
+<section class="story-section fade-in-up">
     <div class="section-container">
         <h2 class="section-title">Our Story: Bridging the Gap</h2>
-        <p class="story-content" style="text-align: center; max-width: 800px; margin: 0 auto; font-size: 1.1rem;">
-            As students, we all face the same problem: what we learn in the classroom is not enough.
-            Stepping into the real world made us realize a clear gap between theory and practice.
-            Hive was born to fill this gap.
-        </p>
+        <div class="story-content">
+            <p>As students, we all face the same challenge: what we learn in classrooms <span class="story-highlight">isn't enough</span>.</p>
+            <p style="margin: 1.5rem 0;">Engaging with the real world revealed a clear gap between theory and application. We realized success requires more than textbooks - it needs <span class="story-highlight">real practical experience</span>, mentorship, and a supportive community.</p>
+            <p>This realization sparked a movement. <span class="story-highlight">Hive was born</span> to bridge this gap and empower the next generation of leaders.</p>
+        </div>
     </div>
 </section>
 
-<!-- قسم What We Do -->
-<section class="section">
+<!-- What We Do Section -->
+<section class="section fade-in-up">
     <div class="section-container">
         <h2 class="section-title">What We Do</h2>
+        <p style="max-width: 700px; margin: 0 auto 3rem; font-size: 1.2rem; color: var(--text-medium);">
+            We provide comprehensive programs and opportunities that transform students into future-ready professionals.
+        </p>
         <div class="services-grid">
             <div class="service-card">
                 <div class="service-icon">
                     <i class="fas fa-calendar-alt"></i>
                 </div>
                 <h3>Event Planning & Hosting</h3>
+                <p>Organizing workshops, seminars, and networking events connecting students with industry experts.</p>
             </div>
             <div class="service-card">
                 <div class="service-icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <h3>Skill Development & Training</h3>
+                <h3>Skill Development</h3>
+                <p>Hands-on training programs in leadership, entrepreneurship, and technical skills.</p>
             </div>
             <div class="service-card">
                 <div class="service-icon">
                     <i class="fas fa-trophy"></i>
                 </div>
-                <h3>Competitions & Certifications</h3>
+                <h3>Competitions</h3>
+                <p>Motivational competitions pushing students to innovate and excel.</p>
             </div>
             <div class="service-card">
                 <div class="service-icon">
                     <i class="fas fa-handshake"></i>
                 </div>
-                <h3>Mentorship & Networking</h3>
+                <h3>Mentorship</h3>
+                <p>One-on-one guidance from experienced professionals across various industries.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- قسم Our Core Values -->
-<section class="section section-dark">
+<!-- Core Values Section -->
+<section class="section section-dark fade-in-up">
     <div class="section-container">
         <h2 class="section-title">Our Core Values</h2>
         <div class="values-grid">
             <div class="value-card">
-                <h3>Student-Led</h3>
-                <p>Built by students, for students. We know what future leaders need.</p>
+                <h3>Student-Led Innovation</h3>
+                <p>Built by students, for students. We understand the unique challenges and opportunities facing the next generation.</p>
             </div>
             <div class="value-card">
-                <h3>Learn by Doing</h3>
-                <p>We value action. Turn knowledge into skills and ideas into impact.</p>
+                <h3>Learning by Doing</h3>
+                <p>We believe in action. Turning knowledge into practical skills and ideas into tangible impact.</p>
             </div>
             <div class="value-card">
-                <h3>Inclusive</h3>
-                <p>Open to all students from all majors. If you're curious and driven, you belong in Hive.</p>
+                <h3>Inclusive Community</h3>
+                <p>Open to all students regardless of background or major. Diversity drives innovation and growth.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- قسم Why Choose Hive -->
-<section class="section">
+<!-- Why Choose Hive -->
+<section class="section fade-in-up">
     <div class="section-container">
         <h2 class="section-title">Why Choose Hive</h2>
         <div class="benefits-list">
             <div class="benefit-item">
                 <i class="fas fa-check-circle"></i>
-                <p>Created by students who understand student needs.</p>
+                <p><strong>Founded by students</strong> who truly understand student needs and aspirations.</p>
             </div>
             <div class="benefit-item">
                 <i class="fas fa-check-circle"></i>
-                <p>Combines academic knowledge with practical, hands-on experience.</p>
+                <p><strong>Bridges academic knowledge</strong> with hands-on, practical experience.</p>
             </div>
             <div class="benefit-item">
                 <i class="fas fa-check-circle"></i>
-                <p>Offers flexible programs aligned with market demands.</p>
+                <p><strong>Flexible programs</strong> designed to align with current market demands.</p>
             </div>
             <div class="benefit-item">
                 <i class="fas fa-check-circle"></i>
-                <p>Supported by a strong network of mentors and partners.</p>
+                <p><strong>Backed by a strong network</strong> of mentors, alumni, and industry partners.</p>
             </div>
             <div class="benefit-item">
                 <i class="fas fa-check-circle"></i>
-                <p>Founded by students experienced in community building and impactful initiatives.</p>
+                <p><strong>Proven track record</strong> of empowering students to achieve their career goals.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- قسم Our Vision & Mission -->
-<section class="section section-dark">
+<!-- Vision & Mission -->
+<section class="section section-dark fade-in-up">
     <div class="section-container">
+        <h2 class="section-title">Vision & Mission</h2>
         <div class="vm-grid">
             <div class="vm-card">
                 <h2>Our Vision</h2>
-                <p>"To become the leading entity that unifies efforts to uplift the next generation and empower them with future-ready skills"</p>
+                <p>"To become the leading platform that unites efforts to uplift and empower the next generation with future-ready skills for a rapidly changing world."</p>
             </div>
             <div class="vm-card">
                 <h2>Our Mission</h2>
-                <p>"Providing free, comprehensive academic and practical learning that equips students with real skills through training, competitions, guidance, skill-building events, and a supportive community that opens opportunities"</p>
+                <p>"To deliver comprehensive, accessible learning experiences that equip students with real-world skills through training, competitions, mentorship, and a supportive community that opens doors to opportunities."</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- قسم Who We Serve -->
-<section class="section">
+<!-- Who We Serve -->
+<section class="section fade-in-up">
     <div class="section-container">
         <h2 class="section-title">Who We Serve</h2>
-        <p style="text-align: center; max-width: 800px; margin: 0 auto; font-size: 1.1rem;">
-            Our current focus is on university students in Jordan, eager to gain real-world skills.
-            We're expanding to support students at all educational levels internationally, along with recent
-            graduates and professionals.
+        <p style="max-width: 800px; margin: 0 auto; font-size: 1.2rem; color: var(--text-medium); line-height: 1.8;">
+            We primarily focus on university students in Jordan looking to gain real-world skills and build meaningful connections.
+            We're expanding our reach to support students at all educational levels internationally, along with recent graduates
+            and early-career professionals seeking to accelerate their growth.
         </p>
     </div>
 </section>
 
-<!-- قسم Trusted by -->
-<section class="section">
+<!-- Our Partners -->
+<section class="section fade-in-up">
     <div class="section-container">
         <h2 class="section-title">Our Partners</h2>
+        <p style="max-width: 700px; margin: 0 auto 3rem; font-size: 1.2rem; color: var(--text-medium);">
+            We collaborate with industry leaders who share our vision of empowering the next generation.
+        </p>
         <div class="trusted-companies">
             <div class="company-item">
-                <div class="company-logo">
+                <div class="company-logo soft-zoom-container">
                     <img src="https://media.licdn.com/dms/image/v2/D4E0BAQEkdu2ekGQ5aQ/company-logo_200_200/B4EZZhqDceHMAI-/0/1745395136810/steamhubjo_logo?e=2147483647&v=beta&t=zHtDmwFAhvLCp8lXH98wGLjXhT5PAtVsIxM7DXiJKyg" alt="String Company">
                 </div>
                 <h3>String</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">EdTech</p>
                 <a href="https://www.linkedin.com/company/stringedu/" target="_blank" class="linkedin-link">
                     <i class="fab fa-linkedin"></i>
                 </a>
             </div>
             <div class="company-item">
-                <div class="company-logo">
+                <div class="company-logo soft-zoom-container">
                     <img src="https://i.imgur.com/JYpFRrT.png" alt="Dimension Company">
                 </div>
                 <h3>Dimension</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Gaming & Development</p>
                 <a href="https://www.linkedin.com/company/dimensionsgames/" target="_blank" class="linkedin-link">
                     <i class="fab fa-linkedin"></i>
                 </a>
             </div>
             <div class="company-item">
-                <div class="company-logo">
+                <div class="company-logo soft-zoom-container">
                     <img src="https://i.pinimg.com/736x/da/da/b8/dadab8253d2f13da012a4e970a4dd60e.jpg" alt="Start Smart Company">
                 </div>
                 <h3>Start Smart</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Entrepreneurship</p>
                 <a href="https://www.linkedin.com/company/startsmartmena/" target="_blank" class="linkedin-link">
                     <i class="fab fa-linkedin"></i>
                 </a>
@@ -695,68 +978,174 @@
     </div>
 </section>
 
-<!-- قسم Join Us الجديد بدون الفورم -->
-<section class="join-section">
+<!-- Join Us Section -->
+<section class="join-section fade-in-up">
     <div class="join-content">
-        <h2>Ready to Join Our Community?</h2>
-        <p>Take the first step towards building your future with Hive. Join thousands of students who are already transforming their careers and gaining real-world experience.</p>
+        <h2>Ready to Transform Your Future?</h2>
+        <p>Join thousands of ambitious students building their career paths, gaining real practical experience, and connecting with industry leaders through Hive.</p>
         
         <div class="join-actions">
-            <a href="{% url 'register' %}" class="cta-button">
-                <i class="fas fa-user-plus"></i> Create Your Account
+            <a href="{% url 'register' %}" class="cta-button pulse-button">
+                <i class="fas fa-user-plus"></i> Start Your Journey Today
             </a>
             <a href="{% url 'login' %}" class="secondary-btn">
-                <i class="fas fa-sign-in-alt"></i> Already a Member? Sign In
+                <i class="fas fa-sign-in-alt"></i> Existing Member? Log In
             </a>
         </div>
         
-        <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2);">
-            <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">What happens after you join?</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; text-align: left;">
-
-                <div>
-                    <h4 style="color: var(--text-light); margin-bottom: 0.5rem;">Access Opportunities</h4>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">Join events, workshops, and competitions</p>
-                </div>
-                <div>
-                    <h4 style="color: var(--text-light); margin-bottom: 0.5rem;"> Connect & Network</h4>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">Meet mentors and like-minded students</p>
-                </div>
+        <div class="join-features">
+            <div class="feature-item">
+                <h4><i class="fas fa-graduation-cap"></i> Access Opportunities</h4>
+                <p>Join exclusive events, workshops, and competitions designed to accelerate your growth.</p>
+            </div>
+            <div class="feature-item">
+                <h4><i class="fas fa-users"></i> Build Your Network</h4>
+                <p>Connect with mentors, industry experts, and like-minded students across Jordan.</p>
+            </div>
+            <div class="feature-item">
+                <h4><i class="fas fa-chart-line"></i> Develop Skills</h4>
+                <p>Gain practical skills valued by employers and set you apart from the competition.</p>
+            </div>
+            <div class="feature-item">
+                <h4><i class="fas fa-trophy"></i> Achieve Success</h4>
+                <p>Join a community of successful alumni who transformed their career paths through Hive.</p>
             </div>
         </div>
     </div>
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('JavaScript loaded successfully');
-    
-    // 1. كاروسيل الأخبار
-    const newsContainer = document.querySelector('.news-cards-container');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Hive homepage loaded successfully');
+        
+        // 1. News Carousel
+        const newsContainer = document.querySelector('.news-cards-container');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
 
-    if (newsContainer && prevBtn && nextBtn) {
-        const scrollAmount = 324; // 300px للبطاقة + 24px للـ gap
+        if (newsContainer && prevBtn && nextBtn) {
+            const scrollAmount = 370; // Card width + gap
+            
+            prevBtn.addEventListener('click', () => {
+                newsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                newsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            });
+        }
         
-        prevBtn.addEventListener('click', () => {
-            newsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        // 2. Soft Image Zoom Effect
+        const softZoomContainers = document.querySelectorAll('.soft-zoom-container');
+        
+        softZoomContainers.forEach(container => {
+            const img = container.querySelector('img');
+            if (img) {
+                container.addEventListener('mouseenter', () => {
+                    img.style.transform = 'scale(1.1)';
+                });
+                
+                container.addEventListener('mouseleave', () => {
+                    img.style.transform = 'scale(1)';
+                });
+            }
         });
         
-        nextBtn.addEventListener('click', () => {
-            newsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        // 3. Storytelling Effect
+        const storyContent = document.querySelector('.story-content');
+        if (storyContent) {
+            const paragraphs = storyContent.querySelectorAll('p');
+            
+            paragraphs.forEach((para, index) => {
+                para.style.opacity = '0';
+                para.style.transform = 'translateY(20px)';
+                para.style.transition = `opacity 0.8s ease ${index * 0.3}s, transform 0.8s ease ${index * 0.3}s`;
+                
+                // Trigger effect when section appears
+                const paraObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, { threshold: 0.5 });
+                
+                paraObserver.observe(para);
+            });
+        }
+        
+        // 4. Pulsing Button Effects
+        const pulseButtons = document.querySelectorAll('.pulse-button');
+        pulseButtons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                button.style.animationPlayState = 'paused';
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                button.style.animationPlayState = 'running';
+            });
         });
-    }
-    
-    // 2. إخفاء رسائل التنبيه تلقائياً بعد 5 ثواني
-    setTimeout(() => {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => {
-            alert.style.transition = 'all 0.3s ease';
-            alert.style.opacity = '0';
-            setTimeout(() => alert.remove(), 300);
+        
+        // 5. Ripple Effect on Buttons
+        const buttons = document.querySelectorAll('.cta-button, .secondary-btn, .admin-btn');
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.7);
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    width: ${size}px;
+                    height: ${size}px;
+                    top: ${y}px;
+                    left: ${x}px;
+                    pointer-events: none;
+                `;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
         });
-    }, 5000);
-});
+        
+        // Add Ripple Animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            
+            .cta-button, .secondary-btn, .admin-btn {
+                position: relative;
+                overflow: hidden;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 6. Initialize Reveal Effects
+        setTimeout(() => {
+            const fadeElements = document.querySelectorAll('.fade-in-up');
+            fadeElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    el.classList.add('revealed');
+                }
+            });
+        }, 100);
+    });
 </script>
 {% endblock %}
